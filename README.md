@@ -22,8 +22,3 @@ npm run build
 npm run preview
 ```
 
-Notes
-- I removed unused template files (CSS and example assets) to keep the repo focused on `src/App.jsx`.
-- If you want ESLint back, restore `eslint.config.js` and the devDependencies in `package.json`.
-
-If you want me to also create a small CHANGELOG entry or commit message, tell me and I will add it.

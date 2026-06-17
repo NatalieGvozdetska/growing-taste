@@ -129,10 +129,19 @@ const CAT_EMOJI   = { vegetable:"🥦", fruit:"🍓", carb:"🍞", protein:"🍗
 const CAT_COLORS  = { vegetable:MINT, fruit:RED, carb:AMBER, protein:LAV, dairy:BLUE, allergen:RED };
 const FEEDING_LABELS = { puree:"Purées only", blw:"Baby-led weaning (BLW)", mixed:"Mixed approach" };
 const ALLERGY_OPTIONS = ["egg","peanut","wheat","dairy","soy","fish","sesame","tree nuts"];
+const REACTION_OPTIONS = [
+  { value:"none", label:"No allergic reaction" },
+  { value:"mild", label:"Mild allergic reaction" },
+  { value:"strong", label:"Strong allergic reaction" },
+  { value:"constipation", label:"Constipation" },
+  { value:"diarrhea", label:"Diarrhea" },
+  { value:"bloating", label:"Bloating" },
+  { value:"spitup", label:"Spit-up" },
+];
 const LLM_OPTIONS = [
   { id:"claude", name:"Claude (Anthropic)", emoji:"🔮", hint:"console.anthropic.com → API Keys", placeholder:"sk-ant-api03-…", color:LAV },
   { id:"openai", name:"GPT-4 (OpenAI)",    emoji:"🤖", hint:"platform.openai.com → API Keys",   placeholder:"sk-proj-…",      color:MINT },
-  { id:"gemini", name:"Gemini (Google)",   emoji:"✨", hint:"aistudio.google.com → Get API Key", placeholder:"AIza…",          color:AMBER },
+  { id:"gemini", name:"Gemini (Google)",   emoji:"✨", hint:"aistudio.google.com → API Keys", placeholder:"AIza…",          color:AMBER },
 ];
 const FLOW_STEPS = ["email","verify","profile","llm"];
 const SIM_CODE = "4827";
@@ -166,9 +175,14 @@ function formatDobDisplay(str) {
   return d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
 }
 function reactionBadge(r) {
-  if (r==="none")   return { label:"No reaction",    ...MINT };
-  if (r==="mild")   return { label:"Mild reaction",  ...AMBER };
-  return                   { label:"Strong reaction", ...RED };
+  if (r==="none")         return { label:"No allergic reaction",       ...MINT };
+  if (r==="mild")         return { label:"Mild allergic reaction",     ...AMBER };
+  if (r==="strong")       return { label:"Strong allergic reaction",   ...RED };
+  if (r==="constipation") return { label:"Constipation",     ...AMBER };
+  if (r==="diarrhea")     return { label:"Diarrhea",         ...RED };
+  if (r==="bloating")     return { label:"Bloating",         ...AMBER };
+  if (r==="spitup")       return { label:"Spit-up",          ...AMBER };
+  return                     { label:"Reaction",         ...AMBER };
 }
 function riskBadge(r) {
   if (r==="low")    return { label:"Low risk", ...MINT };
@@ -176,7 +190,7 @@ function riskBadge(r) {
   return                   { label:"Allergen",  ...RED };
 }
 function buildRoadmap(log, profile) {
-  const introduced = new Set(log.map(e=>e.food));
+  const introduced = new Set(log.map(e=>e.food.trim().toLowerCase()));
   const countByCat = Object.fromEntries(CATEGORIES.map(c=>[c,0]));
   log.forEach(e=>{ if(countByCat[e.category]!==undefined) countByCat[e.category]++; });
   const max = Math.max(...Object.values(countByCat),1);
@@ -184,7 +198,7 @@ function buildRoadmap(log, profile) {
   const allergyKw = profile ? profile.allergies : [];
   const riskOrder = {low:0,medium:1,high:2};
   return FOOD_DB
-    .filter(f=>!introduced.has(f.food)&&!allergyKw.some(a=>f.food.toLowerCase().includes(a)))
+    .filter(f=>!introduced.has(f.food.trim().toLowerCase())&& !allergyKw.some(a=>f.food.toLowerCase().includes(a)))
     .sort((a,b)=>{ const dd=deficit[b.category]-deficit[a.category]; return dd!==0?dd:riskOrder[a.risk]-riskOrder[b.risk]; })
     .slice(0,12)
     .map((item,i)=>({ ...item, week:i<2?"This week":i<5?"Week 2":i<8?"Week 3":"Week 4", deficit:deficit[item.category] }));
@@ -357,9 +371,12 @@ function LogTab({ log, setLog, onOpenProduct }) {
   const [showAdd, setShowAdd] = useState(false);
   const [entry, setEntry]     = useState({ food:"", emoji:"🍽️", category:"vegetable", reaction:"none", notes:"" });
   const [suggestions, setSuggestions] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [error, setError] = useState("");
 
   const handleFoodInput = (val) => {
     setEntry(n=>({...n, food:val}));
+    setError("");
     if (val.length<1) { setSuggestions([]); return; }
     const matches = FOOD_DB.filter(f=>f.food.toLowerCase().includes(val.toLowerCase())).slice(0,5);
     setSuggestions(matches);
@@ -367,13 +384,45 @@ function LogTab({ log, setLog, onOpenProduct }) {
   const pickSuggestion = (f) => {
     setEntry(n=>({...n, food:f.food, emoji:f.emoji, category:f.category}));
     setSuggestions([]);
+    setError("");
   };
-  const add = () => {
-    if (!entry.food.trim()) return;
-    setLog(l=>[{ ...entry, id:Date.now(), date:new Date().toISOString().slice(0,10) }, ...l]);
+
+  const normalizeFood = (food) => food.trim().toLowerCase();
+  const isDuplicateFood = (food, currentId) => {
+    const normalized = normalizeFood(food);
+    return log.some(item => item.food.trim().toLowerCase() === normalized && item.id !== currentId);
+  };
+
+  const resetForm = () => {
     setEntry({ food:"", emoji:"🍽️", category:"vegetable", reaction:"none", notes:"" });
     setSuggestions([]);
+    setEditingId(null);
+    setError("");
     setShowAdd(false);
+  };
+
+  const saveEntry = () => {
+    if (!entry.food.trim()) {
+      setError("Please enter a food name.");
+      return;
+    }
+    if (isDuplicateFood(entry.food, editingId)) {
+      setError("This food is already logged. Duplicate entries are not allowed.");
+      return;
+    }
+    const newEntry = { ...entry, id: editingId || Date.now(), date: new Date().toISOString().slice(0,10) };
+    setLog(l => editingId
+      ? l.map(item => item.id === editingId ? { ...item, ...newEntry, date: item.date } : item)
+      : [newEntry, ...l]
+    );
+    resetForm();
+  };
+
+  const editEntry = (item) => {
+    setEntry({ food:item.food, emoji:item.emoji, category:item.category, reaction:item.reaction, notes:item.notes });
+    setEditingId(item.id);
+    setShowAdd(true);
+    setError("");
   };
 
   return (
@@ -387,7 +436,8 @@ function LogTab({ log, setLog, onOpenProduct }) {
       </button>
       {showAdd && (
         <div style={{ ...neu(16,6), background:"#fff", marginBottom:12, padding:"14px" }}>
-          <div style={{ fontSize:13, fontWeight:700, color:ACCENT, marginBottom:10 }}>New food entry</div>
+          <div style={{ fontSize:13, fontWeight:700, color:ACCENT, marginBottom:10 }}>{editingId ? "Edit food entry" : "New food entry"}</div>
+          {error && <div style={{ fontSize:12, color:RED.text, background:RED.bg, border:"1px solid "+RED.border, borderRadius:8, padding:"10px 12px", marginBottom:10 }}>{error}</div>}
           <div style={{ position:"relative" }}>
             <input placeholder="Food name — start typing to search…" value={entry.food}
               onChange={e=>handleFoodInput(e.target.value)}
@@ -409,20 +459,19 @@ function LogTab({ log, setLog, onOpenProduct }) {
               </div>
             )}
           </div>
-          {[
-            { key:"category", opts:CATEGORIES.map(c=>({ value:c, label:CAT_EMOJI[c]+" "+CAT_LABELS[c] })) },
-            { key:"reaction", opts:[{value:"none",label:"No reaction"},{value:"mild",label:"Mild reaction"},{value:"strong",label:"Strong reaction"}] },
-          ].map(s=>(
-            <select key={s.key} value={entry[s.key]} onChange={e=>setEntry(n=>({...n,[s.key]:e.target.value}))}
-              style={{ ...baseInput, marginBottom:8 }}>
-              {s.opts.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-          ))}
+          <select value={entry.category} onChange={e=>setEntry(n=>({...n,category:e.target.value}))}
+            style={{ ...baseInput, marginBottom:8 }}>
+            {CATEGORIES.map(c=><option key={c} value={c}>{CAT_EMOJI[c]+" "+CAT_LABELS[c]}</option>)}
+          </select>
+          <select value={entry.reaction} onChange={e=>setEntry(n=>({...n,reaction:e.target.value}))}
+            style={{ ...baseInput, marginBottom:8 }}>
+            {REACTION_OPTIONS.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
           <input placeholder="Notes (optional)" value={entry.notes} onChange={e=>setEntry(n=>({...n,notes:e.target.value}))}
             style={{ ...baseInput, marginBottom:10 }} />
           <div style={{ display:"flex", gap:8 }}>
-            <button onClick={add} style={{ flex:1, padding:10, borderRadius:20, background:ACCENT, border:"none", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>Save</button>
-            <button onClick={()=>setShowAdd(false)} style={{ flex:1, padding:10, borderRadius:20, background:ACCENT_LIGHT, border:"none", color:ACCENT, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
+            <button onClick={saveEntry} style={{ flex:1, padding:10, borderRadius:20, background:ACCENT, border:"none", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>Save</button>
+            <button onClick={resetForm} style={{ flex:1, padding:10, borderRadius:20, background:ACCENT_LIGHT, border:"none", color:ACCENT, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
           </div>
         </div>
       )}
@@ -439,7 +488,10 @@ function LogTab({ log, setLog, onOpenProduct }) {
               </div>
               {e.notes && <div style={{ fontSize:12, color:TEXT_SEC }}>{e.notes}</div>}
             </div>
-            <div style={{ fontSize:11, color:TEXT_HINT }}>{e.date}</div>
+            <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:6 }}>
+              <div style={{ fontSize:11, color:TEXT_HINT }}>{e.date}</div>
+              <button onClick={()=>editEntry(e)} style={{ fontSize:11, color:ACCENT, background:"none", border:"none", cursor:"pointer", padding:0 }}>Edit</button>
+            </div>
           </div>
         );
       })}
