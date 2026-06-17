@@ -226,11 +226,20 @@ function FoodAvatar({ emoji, size=44 }) {
 }
 
 // ── Product detail sheet ──────────────────────────────────────────────────────
-function ProductSheet({ food, onClose }) {
-  const f = FOOD_DB.find(x=>x.food===food);
+function ProductSheet({ entry, onClose }) {
+  let f = null;
+  let enriched = null;
+  if (typeof entry === 'string') {
+    f = FOOD_DB.find(x=>x.food===entry);
+  } else if (entry && entry.isUnknown && entry.enrichedDescription) {
+    enriched = entry;
+    f = { food: entry.food, emoji: entry.emoji, category: entry.category };
+  } else if (entry && entry.food) {
+    f = FOOD_DB.find(x=>x.food===entry.food);
+  }
   if (!f) return null;
   const cc = CAT_COLORS[f.category]||MINT;
-  const rb = riskBadge(f.risk);
+  const rb = enriched ? null : riskBadge(FOOD_DB.find(x=>x.food===f.food)?.risk||"low");
   return (
     <div style={{ position:"absolute", inset:0, background:"rgba(92,61,30,0.30)", zIndex:100, display:"flex", alignItems:"flex-end" }} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{ background:BG, borderRadius:"20px 20px 0 0", width:"100%", maxHeight:"80%", overflowY:"auto", padding:"20px 18px 28px" }}>
@@ -241,30 +250,37 @@ function ProductSheet({ food, onClose }) {
             <div style={{ fontSize:20, fontWeight:700, color:TEXT_PRIMARY }}>{f.food}</div>
             <div style={{ display:"flex", gap:6, marginTop:4, flexWrap:"wrap" }}>
               <Badge label={CAT_LABELS[f.category]} {...cc} />
-              <Badge label={rb.label} bg={rb.bg} border={rb.border} color={rb.color} />
+              {rb && <Badge label={rb.label} bg={rb.bg} border={rb.border} color={rb.color} />}
+              {enriched && <Badge label="Enriched" bg="#FFF4E8" border="#F7C29B" color="#B45A19" />}
             </div>
           </div>
         </div>
-        <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6, marginBottom:16 }}>{f.desc}</div>
-        <div style={{ marginBottom:14 }}>
-          <div style={{ fontSize:12, fontWeight:700, color:TEXT_SEC, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Key nutrients</div>
-          <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-            {f.nutrients.map(n=>(
-              <span key={n} style={{ fontSize:12, padding:"4px 10px", borderRadius:20, background:cc.bg, border:"0.5px solid "+cc.border, color:cc.text }}>{n}</span>
-            ))}
-          </div>
-        </div>
-        <div style={{ marginBottom:16 }}>
-          <div style={{ fontSize:12, fontWeight:700, color:TEXT_SEC, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Vitamins</div>
-          <div style={{ display:"flex", gap:6 }}>
-            {f.vitamins.map(v=>(
-              <span key={v} style={{ fontSize:13, fontWeight:600, width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:ACCENT_LIGHT, color:ACCENT }}>{v}</span>
-            ))}
-          </div>
-        </div>
-        <div style={{ fontSize:13, color:"#8A6A48", background:"#fff", borderRadius:10, padding:"10px 12px" }}>
-          <span style={{ fontWeight:600 }}>💡 Tip: </span>{f.tip}
-        </div>
+        {enriched ? (
+          <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6, marginBottom:16 }}>{enriched.enrichedDescription}</div>
+        ) : (
+          <>
+            <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6, marginBottom:16 }}>{FOOD_DB.find(x=>x.food===f.food)?.desc}</div>
+            <div style={{ marginBottom:14 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:TEXT_SEC, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Key nutrients</div>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                {FOOD_DB.find(x=>x.food===f.food)?.nutrients.map(n=>(
+                  <span key={n} style={{ fontSize:12, padding:"4px 10px", borderRadius:20, background:cc.bg, border:"0.5px solid "+cc.border, color:cc.text }}>{n}</span>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginBottom:16 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:TEXT_SEC, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Vitamins</div>
+              <div style={{ display:"flex", gap:6 }}>
+                {FOOD_DB.find(x=>x.food===f.food)?.vitamins.map(v=>(
+                  <span key={v} style={{ fontSize:13, fontWeight:600, width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:ACCENT_LIGHT, color:ACCENT }}>{v}</span>
+                ))}
+              </div>
+            </div>
+            <div style={{ fontSize:13, color:"#8A6A48", background:"#fff", borderRadius:10, padding:"10px 12px" }}>
+              <span style={{ fontWeight:600 }}>💡 Tip: </span>{FOOD_DB.find(x=>x.food===f.food)?.tip}
+            </div>
+          </>
+        )}
         <button onClick={onClose} style={{ width:"100%", marginTop:16, padding:"12px", borderRadius:24, border:"none", background:ACCENT_LIGHT, color:ACCENT, fontSize:14, fontWeight:600, cursor:"pointer" }}>Close</button>
       </div>
     </div>
@@ -290,7 +306,7 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
               <div style={{ display:"flex", alignItems:"center", gap:14 }}>
                 <FoodAvatar emoji={todayFood.emoji} size={60} />
                 <div style={{ flex:1 }}>
-                  <button onClick={()=>onOpenProduct(todayFood.food)} style={{ fontSize:17, fontWeight:700, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0, textAlign:"left" }}>{todayFood.food}</button>
+                  <button onClick={()=>onOpenProduct(todayFood)} style={{ fontSize:17, fontWeight:700, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0, textAlign:"left" }}>{todayFood.food}</button>
                   <div style={{ fontSize:12, color:TEXT_SEC, marginTop:2, lineHeight:1.4 }}>{todayFood.tip}</div>
                   <div style={{ display:"flex", gap:6, marginTop:8, flexWrap:"wrap" }}>
                     {todayFood.nutrients.slice(0,2).map(n=>(
@@ -308,7 +324,7 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
               <div style={{ display:"flex", alignItems:"center", gap:14 }}>
                 <FoodAvatar emoji={tomorrowFood.emoji} size={52} />
                 <div style={{ flex:1 }}>
-                  <button onClick={()=>onOpenProduct(tomorrowFood.food)} style={{ fontSize:15, fontWeight:600, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0, textAlign:"left" }}>{tomorrowFood.food}</button>
+                  <button onClick={()=>onOpenProduct(tomorrowFood)} style={{ fontSize:15, fontWeight:600, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0, textAlign:"left" }}>{tomorrowFood.food}</button>
                   <div style={{ fontSize:12, color:TEXT_SEC, marginTop:1 }}>{tomorrowFood.tip}</div>
                   <div style={{ display:"flex", gap:6, marginTop:7, flexWrap:"wrap" }}>
                     {tomorrowFood.nutrients.slice(0,2).map(n=>(
@@ -351,7 +367,7 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
               <FoodAvatar emoji={item.emoji} size={44} />
               <div style={{ flex:1 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3, flexWrap:"wrap" }}>
-                  <button onClick={()=>onOpenProduct(item.food)} style={{ fontWeight:600, fontSize:14, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0 }}>{item.food}</button>
+                  <button onClick={()=>onOpenProduct(item)} style={{ fontWeight:600, fontSize:14, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0 }}>{item.food}</button>
                   <Badge label={CAT_LABELS[item.category]} {...cc} />
                   {item.deficit>0 && <Badge label="↑ needs balance" {...LAV} />}
                 </div>
@@ -373,6 +389,7 @@ function LogTab({ log, setLog, onOpenProduct }) {
   const [suggestions, setSuggestions] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
+  const [enriching, setEnriching] = useState(false);
 
   const handleFoodInput = (val) => {
     setEntry(n=>({...n, food:val}));
@@ -392,6 +409,7 @@ function LogTab({ log, setLog, onOpenProduct }) {
     const normalized = normalizeFood(food);
     return log.some(item => item.food.trim().toLowerCase() === normalized && item.id !== currentId);
   };
+  const isUnknownFood = (food) => !FOOD_DB.some(item => normalizeFood(item.food) === normalizeFood(food));
 
   const resetForm = () => {
     setEntry({ food:"", emoji:"🍽️", category:"vegetable", reaction:"none", notes:"" });
@@ -399,6 +417,23 @@ function LogTab({ log, setLog, onOpenProduct }) {
     setEditingId(null);
     setError("");
     setShowAdd(false);
+  };
+
+  const getMockEnrichment = (item) => {
+    const category = item.category ? CAT_LABELS[item.category].toLowerCase().replace(/s$/,"") : "food";
+    return `Demo enrichment for ${item.food}: this ${category} can be introduced in small, soft portions and is generally gentle on baby tummies. Track notes and adjust texture based on response.`;
+  };
+
+  const enrichUnknownFoods = () => {
+    if (!log.some(item => item.isUnknown)) return;
+    setEnriching(true);
+    window.setTimeout(() => {
+      setLog(currentLog => currentLog.map(item => item.isUnknown ? {
+        ...item,
+        enrichedDescription: item.enrichedDescription || getMockEnrichment(item),
+      } : item));
+      setEnriching(false);
+    }, 500);
   };
 
   const saveEntry = () => {
@@ -410,7 +445,14 @@ function LogTab({ log, setLog, onOpenProduct }) {
       setError("This food is already logged. Duplicate entries are not allowed.");
       return;
     }
-    const newEntry = { ...entry, id: editingId || Date.now(), date: new Date().toISOString().slice(0,10) };
+    const unknown = isUnknownFood(entry.food);
+    const newEntry = {
+      ...entry,
+      id: editingId || Date.now(),
+      date: new Date().toISOString().slice(0,10),
+      isUnknown: unknown,
+      enrichedDescription: unknown ? undefined : undefined,
+    };
     setLog(l => editingId
       ? l.map(item => item.id === editingId ? { ...item, ...newEntry, date: item.date } : item)
       : [newEntry, ...l]
@@ -475,6 +517,15 @@ function LogTab({ log, setLog, onOpenProduct }) {
           </div>
         </div>
       )}
+      <div style={{ marginBottom:12, display:"flex", gap:10, alignItems:"center" }}>
+        <button onClick={enrichUnknownFoods} disabled={enriching || !log.some(item => item.isUnknown && !item.enrichedDescription)}
+          style={{ flex:1, padding:12, borderRadius:20, background:enriching ? "#f0e6da" : ACCENT, border:"none", color:enriching ? "#b89f80" : "#fff", fontSize:13, fontWeight:700, cursor:enriching ? "not-allowed" : "pointer" }}>
+          {enriching ? "Enriching…" : "Enrich descriptions (demo mode)"}
+        </button>
+        <div style={{ fontSize:12, color:TEXT_SEC, lineHeight:1.4 }}>
+          {log.some(item => item.isUnknown) ? `${log.filter(item => item.isUnknown).length} food(s) need enrichment` : "No unknown foods yet"}
+        </div>
+      </div>
       {log.map(e=>{
         const rb=reactionBadge(e.reaction); const cc=CAT_COLORS[e.category]||MINT;
         return (
@@ -482,9 +533,10 @@ function LogTab({ log, setLog, onOpenProduct }) {
             <FoodAvatar emoji={e.emoji} size={48} />
             <div style={{ flex:1 }}>
               <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3, flexWrap:"wrap" }}>
-                <button onClick={()=>onOpenProduct(e.food)} style={{ fontWeight:600, fontSize:14, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0 }}>{e.food}</button>
+                <button onClick={()=>onOpenProduct(e)} style={{ fontWeight:600, fontSize:14, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0 }}>{e.food}</button>
                 <Badge label={rb.label} bg={rb.bg} border={rb.border} color={rb.color} />
                 {e.category && <Badge label={CAT_LABELS[e.category]} {...cc} />}
+                {e.isUnknown && !e.enrichedDescription && <Badge label="Needs enrichment" bg="#FFF4E8" border="#F7C29B" color="#B45A19" />}
               </div>
               {e.notes && <div style={{ fontSize:12, color:TEXT_SEC }}>{e.notes}</div>}
             </div>
@@ -662,7 +714,7 @@ function MainApp({ initProfile, onSignOut }) {
         ))}
       </div>
 
-      {productSheet && <ProductSheet food={productSheet} onClose={()=>setProductSheet(null)} />}
+      {productSheet && <ProductSheet entry={productSheet} onClose={()=>setProductSheet(null)} />}
     </div>
   );
 }
