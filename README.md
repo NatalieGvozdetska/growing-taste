@@ -22,3 +22,11 @@ npm run build
 npm run preview
 ```
 
+Live demo
+
+The app is deployed on Vercel and can be viewed as part of my portfolio:
+
+https://growing-taste.vercel.app/
+
+Feel free to test the enrichment flow and share feedback.
+
