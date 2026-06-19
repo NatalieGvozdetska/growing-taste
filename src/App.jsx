@@ -689,7 +689,9 @@ function MainApp({ initProfile, onSignOut }) {
     <div style={{ fontFamily:"system-ui,sans-serif", maxWidth:380, margin:"0 auto", display:"flex", flexDirection:"column", height:640, position:"relative", background:BG }}>
       <div style={{ padding:"16px 18px 12px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <div style={{ ...neu(16,5), width:42, height:42, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>🍑</div>
+          <div style={{ ...neu(16,5), width:42, height:42, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>
+            <img src="/icon.png" style={{ width:42, height:42, borderRadius:14, objectFit:"cover" }} alt="Growing Taste" />
+          </div>
           <div>
             <div style={{ fontSize:17, fontWeight:800, color:TEXT_PRIMARY, letterSpacing:"-0.3px" }}>Growing Taste</div>
             <div style={{ fontSize:11, color:TEXT_SEC }}>{"Hi "+profile.name+" 👋  "+getAgeLabel(profile.dob)+" · "+FEEDING_LABELS[profile.feedingStyle]}</div>
@@ -726,7 +728,9 @@ function OnboardingShell({ step, title, subtitle, children }) {
     <div style={{ fontFamily:"system-ui,sans-serif", maxWidth:380, margin:"0 auto", minHeight:620, display:"flex", flexDirection:"column", background:BG }}>
       <div style={{ padding:"20px 20px 0" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <div style={{ ...neu(16,5), width:42, height:42, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>🍑</div>
+          <div style={{ ...neu(16,5), width:42, height:42, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>
+            <img src="/icon.png" style={{ width:42, height:42, borderRadius:14, objectFit:"cover" }} alt="Growing Taste" />
+          </div>
           <div style={{ fontSize:18, fontWeight:800, color:TEXT_PRIMARY, letterSpacing:"-0.3px" }}>Growing Taste</div>
         </div>
         {idx>=0 && (
@@ -787,7 +791,9 @@ export default function App() {
   if(screen==="welcome") return (
     <OnboardingShell step="welcome">
       <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", gap:12 }}>
-        <div style={{ ...neu(28,8), width:96, height:96, display:"flex", alignItems:"center", justifyContent:"center", fontSize:48, marginBottom:8 }}>🍑</div>
+        <div style={{ ...neu(28,8), width:96, height:96, display:"flex", alignItems:"center", justifyContent:"center", fontSize:48, marginBottom:8 }}>
+          <img src="/icon.png" style={{ width:96, height:96, borderRadius:28, objectFit:"cover" }} alt="Growing Taste" />
+        </div>
         <div style={{ fontSize:22, fontWeight:800, color:TEXT_PRIMARY }}>Welcome to Growing Taste</div>
         <div style={{ fontSize:14, color:TEXT_SEC, lineHeight:1.6, maxWidth:280 }}>Your AI-powered weaning companion. Track foods, spot reactions, and get a personalized roadmap for your baby.</div>
         <div style={{ width:"100%", marginTop:16 }}>
