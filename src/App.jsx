@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 
 // ─── Palette: peach / soft orange / soft yellow ──────────────────────────────
-const BG     = "#FBEFE2";
-const CARD   = "#FBEFE2";
-const SHADOW_DARK  = "rgba(214,178,140,0.45)";
-const SHADOW_LIGHT = "rgba(255,255,255,0.95)";
-const ACCENT       = "#F4894A";   // primary peach-orange
+const BG     = "#FFFFFF";
+const CARD   = "#FFF6EE";
+const SHADOW_DARK  = "rgba(214,178,140,0.35)";
+const SHADOW_LIGHT = "rgba(255,255,255,0.98)";
+const ACCENT       = "#F4894A";
 const ACCENT_LIGHT = "#FFE3CC";
 const TEXT_PRIMARY = "#5C3D1E";
 const TEXT_SEC     = "#B07848";
@@ -15,7 +15,7 @@ const MINT  = { bg:"#EAF6E9", border:"#BFE3BC", text:"#4F8F4B" };
 const AMBER = { bg:"#FFF3D6", border:"#FFD98A", text:"#A9760B" };
 const BLUE  = { bg:"#E9F1FB", border:"#BBD8F5", text:"#3E6FA8" };
 const RED   = { bg:"#FCEAE6", border:"#F4C3B8", text:"#C0573A" };
-const LAV   = { bg:"#FFE3CC", border:"#FBC089", text:"#C0612A" }; // re-purposed as secondary accent
+const LAV   = { bg:"#FFE3CC", border:"#FBC089", text:"#C0612A" };
 
 const neu = (r=16, depth=8) => ({
   borderRadius: r, background: CARD,
@@ -32,95 +32,42 @@ const neuBtn = (active) => ({
     : `-4px -4px 10px ${SHADOW_LIGHT}, 4px 4px 10px ${SHADOW_DARK}`,
 });
 
-// ─── Data ────────────────────────────────────────────────────────────────────
 const FOOD_DB = [
-  { food:"Sweet potato", emoji:"🍠", category:"vegetable", risk:"low",    tip:"Steam & mash. Great first food.",
-    nutrients:["Beta-carotene","Vitamin C","Potassium","Fibre"], vitamins:["A","C","B6"],
-    desc:"One of the best first foods — naturally sweet, easy to digest, and packed with beta-carotene for eye and immune health." },
-  { food:"Carrot",       emoji:"🥕", category:"vegetable", risk:"low",    tip:"Boil soft, purée or finger food.",
-    nutrients:["Beta-carotene","Vitamin K","Potassium","Fibre"], vitamins:["A","K","B6"],
-    desc:"Rich in beta-carotene which converts to Vitamin A, supporting vision and immune function. Naturally sweet." },
-  { food:"Broccoli",     emoji:"🥦", category:"vegetable", risk:"low",    tip:"Steam florets until very soft.",
-    nutrients:["Vitamin C","Folate","Iron","Calcium"], vitamins:["C","K","B9"],
-    desc:"A nutritional powerhouse with iron and calcium. Great as a BLW finger food when steamed soft." },
-  { food:"Courgette",    emoji:"🥒", category:"vegetable", risk:"low",    tip:"Sauté and blend or serve as fingers.",
-    nutrients:["Vitamin C","Folate","Potassium","Water"], vitamins:["C","B9"],
-    desc:"High water content makes it easy to digest and hydrating. Mild flavour pairs well with other vegetables." },
-  { food:"Spinach",      emoji:"🌿", category:"vegetable", risk:"low",    tip:"Wilt and blend into purées.",
-    nutrients:["Iron","Calcium","Folate","Vitamin K"], vitamins:["A","C","K","B9"],
-    desc:"Excellent source of non-haem iron — pair with Vitamin C foods to boost absorption." },
-  { food:"Apple",        emoji:"🍎", category:"fruit",     risk:"low",    tip:"Bake or stew to soften.",
-    nutrients:["Vitamin C","Fibre","Quercetin","Natural sugars"], vitamins:["C"],
-    desc:"A classic first fruit. High in pectin fibre which supports digestion." },
-  { food:"Pear",         emoji:"🍐", category:"fruit",     risk:"low",    tip:"Ripe pear can be served raw, grated.",
-    nutrients:["Fibre","Vitamin C","Copper","Potassium"], vitamins:["C","K"],
-    desc:"Very gentle on tiny tummies and naturally helpful for constipation." },
-  { food:"Banana",       emoji:"🍌", category:"fruit",     risk:"low",    tip:"Mash or serve as finger food strips.",
-    nutrients:["Potassium","Vitamin B6","Magnesium","Natural sugars"], vitamins:["B6","C"],
-    desc:"Energy-dense and easy to prepare — no cooking needed." },
-  { food:"Mango",        emoji:"🥭", category:"fruit",     risk:"low",    tip:"Ripe and soft — great finger food.",
-    nutrients:["Vitamin C","Beta-carotene","Folate","Fibre"], vitamins:["A","C","B9"],
-    desc:"Exceptionally high in Vitamin C and beta-carotene. Ripe mango is naturally soft." },
-  { food:"Blueberries",  emoji:"🫐", category:"fruit",     risk:"low",    tip:"Squish before serving to reduce choking risk.",
-    nutrients:["Antioxidants","Vitamin C","Vitamin K","Fibre"], vitamins:["C","K"],
-    desc:"Rich in antioxidants that support brain development. Always squish or halve before serving." },
-  { food:"Oats",         emoji:"🌾", category:"carb",      risk:"low",    tip:"Cook into smooth porridge.",
-    nutrients:["Beta-glucan fibre","Iron","Zinc","B vitamins"], vitamins:["B1","B5"],
-    desc:"A brilliant breakfast base — slow-release energy and soluble fibre supports stable blood sugar." },
-  { food:"Rice",         emoji:"🍚", category:"carb",      risk:"low",    tip:"Well-cooked soft rice or rice porridge.",
-    nutrients:["Carbohydrates","B vitamins","Magnesium","Iron (fortified)"], vitamins:["B1","B3"],
-    desc:"Easy to digest and rarely allergenic. Baby rice cereal is often fortified with iron." },
-  { food:"Pasta",        emoji:"🍝", category:"carb",      risk:"low",    tip:"Cook very soft; small shapes work best.",
-    nutrients:["Carbohydrates","B vitamins","Iron (enriched)","Folate"], vitamins:["B1","B9"],
-    desc:"A versatile carb that pairs with almost any sauce. Cook until very soft." },
-  { food:"Bread",        emoji:"🍞", category:"carb",      risk:"low",    tip:"Soft wholemeal strips for BLW.",
-    nutrients:["Carbohydrates","B vitamins","Iron","Fibre (wholemeal)"], vitamins:["B1","B3"],
-    desc:"Wholemeal bread offers more fibre and nutrients than white. Good for BLW as toast fingers." },
-  { food:"Potato",       emoji:"🥔", category:"carb",      risk:"low",    tip:"Boil and mash with breast milk.",
-    nutrients:["Vitamin C","Potassium","B6","Carbohydrates"], vitamins:["C","B6"],
-    desc:"Filling and versatile. Boiled and mashed with breast milk or formula creates a smooth, familiar taste." },
-  { food:"Chicken",      emoji:"🍗", category:"protein",   risk:"low",    tip:"Slow-cook until very tender, shred finely.",
-    nutrients:["Protein","Iron","Zinc","B vitamins"], vitamins:["B3","B6","B12"],
-    desc:"Excellent source of haem iron and zinc for immune function." },
-  { food:"Lentils",      emoji:"🫘", category:"protein",   risk:"low",    tip:"Red lentil purée is easy to digest.",
-    nutrients:["Plant protein","Iron","Folate","Fibre"], vitamins:["B9","B1"],
-    desc:"A plant-based protein powerhouse. Red lentils cook quickly and blend into a smooth purée." },
-  { food:"Beef",         emoji:"🥩", category:"protein",   risk:"low",    tip:"Slow-cook and blend or shred.",
-    nutrients:["Haem iron","Zinc","Protein","B12"], vitamins:["B12","B3","B6"],
-    desc:"One of the best sources of haem iron and B12 for brain development." },
-  { food:"Tofu",         emoji:"🧊", category:"protein",   risk:"low",    tip:"Soft silken tofu — easy to grab.",
-    nutrients:["Plant protein","Calcium","Iron","Isoflavones"], vitamins:["B1"],
-    desc:"Silken tofu is naturally soft — no cooking needed. Good plant-based source of calcium and protein." },
-  { food:"Salmon",       emoji:"🐟", category:"protein",   risk:"medium", tip:"Rich in omega-3, flake finely.",
-    nutrients:["Omega-3 (DHA/EPA)","Protein","Vitamin D","B12"], vitamins:["D","B12","B3"],
-    desc:"Outstanding source of DHA omega-3 for brain and eye development." },
-  { food:"Yoghurt",      emoji:"🥛", category:"dairy",     risk:"medium", tip:"Full-fat plain yoghurt, no added sugar.",
-    nutrients:["Calcium","Protein","Probiotics","B12"], vitamins:["B12","B2"],
-    desc:"Full-fat plain yoghurt provides calcium for bone development and probiotics for gut health." },
-  { food:"Cheese",       emoji:"🧀", category:"dairy",     risk:"medium", tip:"Grated mild cheddar on soft food.",
-    nutrients:["Calcium","Protein","Fat","Vitamin A"], vitamins:["A","B12","B2"],
-    desc:"Calcium-dense and flavourful. Choose mild, full-fat varieties." },
-  { food:"Egg yolk",     emoji:"🥚", category:"allergen",  risk:"medium", tip:"Introduce allergen early.",
-    nutrients:["Choline","Vitamin D","Lutein","Protein"], vitamins:["D","B12","A"],
-    desc:"Rich in choline, critical for brain development. Early introduction is now recommended." },
-  { food:"Peanut butter",emoji:"🥜", category:"allergen",  risk:"high",   tip:"Dilute with water first.",
-    nutrients:["Healthy fats","Protein","Niacin","Magnesium"], vitamins:["E","B3"],
-    desc:"Early introduction (from ~6 months) significantly reduces peanut allergy risk." },
-  { food:"Wheat",        emoji:"🌾", category:"allergen",  risk:"medium", tip:"Soft bread or pasta — watch for reaction.",
-    nutrients:["Carbohydrates","B vitamins","Iron","Fibre"], vitamins:["B1","B9"],
-    desc:"Gluten-containing grain. Introduce gradually via soft bread or pasta." },
-  { food:"Sesame",       emoji:"🫙", category:"allergen",  risk:"high",   tip:"Tiny amount of tahini mixed in food.",
-    nutrients:["Calcium","Healthy fats","Protein","Iron"], vitamins:["B1","E"],
-    desc:"One of the top 14 allergens. Introduce via a tiny amount of tahini mixed into food." },
+  { food:"Sweet potato", emoji:"🍠", category:"vegetable", risk:"low", tip:"Steam & mash. Great first food.", nutrients:["Beta-carotene","Vitamin C","Potassium","Fibre"], vitamins:["A","C","B6"], desc:"One of the best first foods — naturally sweet, easy to digest, and packed with beta-carotene for eye and immune health." },
+  { food:"Carrot", emoji:"🥕", category:"vegetable", risk:"low", tip:"Boil soft, purée or finger food.", nutrients:["Beta-carotene","Vitamin K","Potassium","Fibre"], vitamins:["A","K","B6"], desc:"Rich in beta-carotene which converts to Vitamin A, supporting vision and immune function. Naturally sweet." },
+  { food:"Broccoli", emoji:"🥦", category:"vegetable", risk:"low", tip:"Steam florets until very soft.", nutrients:["Vitamin C","Folate","Iron","Calcium"], vitamins:["C","K","B9"], desc:"A nutritional powerhouse with iron and calcium. Great as a BLW finger food when steamed soft." },
+  { food:"Courgette", emoji:"🥒", category:"vegetable", risk:"low", tip:"Sauté and blend or serve as fingers.", nutrients:["Vitamin C","Folate","Potassium","Water"], vitamins:["C","B9"], desc:"High water content makes it easy to digest and hydrating. Mild flavour pairs well with other vegetables." },
+  { food:"Spinach", emoji:"🌿", category:"vegetable", risk:"low", tip:"Wilt and blend into purées.", nutrients:["Iron","Calcium","Folate","Vitamin K"], vitamins:["A","C","K","B9"], desc:"Excellent source of non-haem iron — pair with Vitamin C foods to boost absorption." },
+  { food:"Apple", emoji:"🍎", category:"fruit", risk:"low", tip:"Bake or stew to soften.", nutrients:["Vitamin C","Fibre","Quercetin","Natural sugars"], vitamins:["C"], desc:"A classic first fruit. High in pectin fibre which supports digestion." },
+  { food:"Pear", emoji:"🍐", category:"fruit", risk:"low", tip:"Ripe pear can be served raw, grated.", nutrients:["Fibre","Vitamin C","Copper","Potassium"], vitamins:["C","K"], desc:"Very gentle on tiny tummies and naturally helpful for constipation." },
+  { food:"Banana", emoji:"🍌", category:"fruit", risk:"low", tip:"Mash or serve as finger food strips.", nutrients:["Potassium","Vitamin B6","Magnesium","Natural sugars"], vitamins:["B6","C"], desc:"Energy-dense and easy to prepare — no cooking needed." },
+  { food:"Mango", emoji:"🥭", category:"fruit", risk:"low", tip:"Ripe and soft — great finger food.", nutrients:["Vitamin C","Beta-carotene","Folate","Fibre"], vitamins:["A","C","B9"], desc:"Exceptionally high in Vitamin C and beta-carotene. Ripe mango is naturally soft." },
+  { food:"Blueberries", emoji:"🫐", category:"fruit", risk:"low", tip:"Squish before serving to reduce choking risk.", nutrients:["Antioxidants","Vitamin C","Vitamin K","Fibre"], vitamins:["C","K"], desc:"Rich in antioxidants that support brain development. Always squish or halve before serving." },
+  { food:"Oats", emoji:"🌾", category:"carb", risk:"low", tip:"Cook into smooth porridge.", nutrients:["Beta-glucan fibre","Iron","Zinc","B vitamins"], vitamins:["B1","B5"], desc:"A brilliant breakfast base — slow-release energy and soluble fibre supports stable blood sugar." },
+  { food:"Rice", emoji:"🍚", category:"carb", risk:"low", tip:"Well-cooked soft rice or rice porridge.", nutrients:["Carbohydrates","B vitamins","Magnesium","Iron (fortified)"], vitamins:["B1","B3"], desc:"Easy to digest and rarely allergenic. Baby rice cereal is often fortified with iron." },
+  { food:"Pasta", emoji:"🍝", category:"carb", risk:"low", tip:"Cook very soft; small shapes work best.", nutrients:["Carbohydrates","B vitamins","Iron (enriched)","Folate"], vitamins:["B1","B9"], desc:"A versatile carb that pairs with almost any sauce. Cook until very soft." },
+  { food:"Bread", emoji:"🍞", category:"carb", risk:"low", tip:"Soft wholemeal strips for BLW.", nutrients:["Carbohydrates","B vitamins","Iron","Fibre (wholemeal)"], vitamins:["B1","B3"], desc:"Wholemeal bread offers more fibre and nutrients than white. Good for BLW as toast fingers." },
+  { food:"Potato", emoji:"🥔", category:"carb", risk:"low", tip:"Boil and mash with breast milk.", nutrients:["Vitamin C","Potassium","B6","Carbohydrates"], vitamins:["C","B6"], desc:"Filling and versatile. Boiled and mashed with breast milk or formula creates a smooth, familiar taste." },
+  { food:"Chicken", emoji:"🍗", category:"protein", risk:"low", tip:"Slow-cook until very tender, shred finely.", nutrients:["Protein","Iron","Zinc","B vitamins"], vitamins:["B3","B6","B12"], desc:"Excellent source of haem iron and zinc for immune function." },
+  { food:"Lentils", emoji:"🫘", category:"protein", risk:"low", tip:"Red lentil purée is easy to digest.", nutrients:["Plant protein","Iron","Folate","Fibre"], vitamins:["B9","B1"], desc:"A plant-based protein powerhouse. Red lentils cook quickly and blend into a smooth purée." },
+  { food:"Beef", emoji:"🥩", category:"protein", risk:"low", tip:"Slow-cook and blend or shred.", nutrients:["Haem iron","Zinc","Protein","B12"], vitamins:["B12","B3","B6"], desc:"One of the best sources of haem iron and B12 for brain development." },
+  { food:"Tofu", emoji:"🧊", category:"protein", risk:"low", tip:"Soft silken tofu — easy to grab.", nutrients:["Plant protein","Calcium","Iron","Isoflavones"], vitamins:["B1"], desc:"Silken tofu is naturally soft — no cooking needed. Good plant-based source of calcium and protein." },
+  { food:"Salmon", emoji:"🐟", category:"protein", risk:"medium", tip:"Rich in omega-3, flake finely.", nutrients:["Omega-3 (DHA/EPA)","Protein","Vitamin D","B12"], vitamins:["D","B12","B3"], desc:"Outstanding source of DHA omega-3 for brain and eye development." },
+  { food:"Yoghurt", emoji:"🥛", category:"dairy", risk:"medium", tip:"Full-fat plain yoghurt, no added sugar.", nutrients:["Calcium","Protein","Probiotics","B12"], vitamins:["B12","B2"], desc:"Full-fat plain yoghurt provides calcium for bone development and probiotics for gut health." },
+  { food:"Cheese", emoji:"🧀", category:"dairy", risk:"medium", tip:"Grated mild cheddar on soft food.", nutrients:["Calcium","Protein","Fat","Vitamin A"], vitamins:["A","B12","B2"], desc:"Calcium-dense and flavourful. Choose mild, full-fat varieties." },
+  { food:"Egg yolk", emoji:"🥚", category:"allergen", risk:"medium", tip:"Introduce allergen early.", nutrients:["Choline","Vitamin D","Lutein","Protein"], vitamins:["D","B12","A"], desc:"Rich in choline, critical for brain development. Early introduction is now recommended." },
+  { food:"Peanut butter", emoji:"🥜", category:"allergen", risk:"high", tip:"Dilute with water first.", nutrients:["Healthy fats","Protein","Niacin","Magnesium"], vitamins:["E","B3"], desc:"Early introduction (from ~6 months) significantly reduces peanut allergy risk." },
+  { food:"Wheat", emoji:"🌾", category:"allergen", risk:"medium", tip:"Soft bread or pasta — watch for reaction.", nutrients:["Carbohydrates","B vitamins","Iron","Fibre"], vitamins:["B1","B9"], desc:"Gluten-containing grain. Introduce gradually via soft bread or pasta." },
+  { food:"Sesame", emoji:"🫙", category:"allergen", risk:"high", tip:"Tiny amount of tahini mixed in food.", nutrients:["Calcium","Healthy fats","Protein","Iron"], vitamins:["B1","E"], desc:"One of the top 14 allergens. Introduce via a tiny amount of tahini mixed into food." },
 ];
 
 const INITIAL_LOG = [
   { id:1, date:"2024-06-01", food:"Sweet potato", emoji:"🍠", category:"vegetable", reaction:"none", notes:"Loved it!" },
-  { id:2, date:"2024-06-02", food:"Carrot",       emoji:"🥕", category:"vegetable", reaction:"none", notes:"Ate half" },
-  { id:3, date:"2024-06-03", food:"Chicken",      emoji:"🍗", category:"protein",   reaction:"none", notes:"Shredded finely" },
-  { id:4, date:"2024-06-04", food:"Beef",         emoji:"🥩", category:"protein",   reaction:"none", notes:"Slow cooked" },
-  { id:5, date:"2024-06-05", food:"Apple",        emoji:"🍎", category:"fruit",     reaction:"none", notes:"Finger food attempt" },
-  { id:6, date:"2024-06-06", food:"Oats",         emoji:"🌾", category:"carb",      reaction:"mild", notes:"Small rash on chin" },
+  { id:2, date:"2024-06-02", food:"Carrot", emoji:"🥕", category:"vegetable", reaction:"none", notes:"Ate half" },
+  { id:3, date:"2024-06-03", food:"Chicken", emoji:"🍗", category:"protein", reaction:"none", notes:"Shredded finely" },
+  { id:4, date:"2024-06-04", food:"Beef", emoji:"🥩", category:"protein", reaction:"none", notes:"Slow cooked" },
+  { id:5, date:"2024-06-05", food:"Apple", emoji:"🍎", category:"fruit", reaction:"none", notes:"Finger food attempt" },
+  { id:6, date:"2024-06-06", food:"Oats", emoji:"🌾", category:"carb", reaction:"mild", notes:"Small rash on chin" },
 ];
 
 const CATEGORIES = ["vegetable","fruit","carb","protein","dairy","allergen"];
@@ -140,13 +87,12 @@ const REACTION_OPTIONS = [
 ];
 const LLM_OPTIONS = [
   { id:"claude", name:"Claude (Anthropic)", emoji:"🔮", hint:"console.anthropic.com → API Keys", placeholder:"sk-ant-api03-…", color:LAV },
-  { id:"openai", name:"GPT-4 (OpenAI)",    emoji:"🤖", hint:"platform.openai.com → API Keys",   placeholder:"sk-proj-…",      color:MINT },
-  { id:"gemini", name:"Gemini (Google)",   emoji:"✨", hint:"aistudio.google.com → API Keys", placeholder:"AIza…",          color:AMBER },
+  { id:"openai", name:"GPT-4 (OpenAI)", emoji:"🤖", hint:"platform.openai.com → API Keys", placeholder:"sk-proj-…", color:MINT },
+  { id:"gemini", name:"Gemini (Google)", emoji:"✨", hint:"aistudio.google.com → API Keys", placeholder:"AIza…", color:AMBER },
 ];
 const FLOW_STEPS = ["email","verify","profile","llm"];
 const SIM_CODE = "4827";
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
 function parseDob(str) {
   if (!str) return null;
   if (str.includes("/")) {
@@ -175,19 +121,19 @@ function formatDobDisplay(str) {
   return d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
 }
 function reactionBadge(r) {
-  if (r==="none")         return { label:"No allergic reaction",       ...MINT };
-  if (r==="mild")         return { label:"Mild allergic reaction",     ...AMBER };
-  if (r==="strong")       return { label:"Strong allergic reaction",   ...RED };
-  if (r==="constipation") return { label:"Constipation",     ...AMBER };
-  if (r==="diarrhea")     return { label:"Diarrhea",         ...RED };
-  if (r==="bloating")     return { label:"Bloating",         ...AMBER };
-  if (r==="spitup")       return { label:"Spit-up",          ...AMBER };
-  return                     { label:"Reaction",         ...AMBER };
+  if (r==="none") return { label:"No allergic reaction", ...MINT };
+  if (r==="mild") return { label:"Mild allergic reaction", ...AMBER };
+  if (r==="strong") return { label:"Strong allergic reaction", ...RED };
+  if (r==="constipation") return { label:"Constipation", ...AMBER };
+  if (r==="diarrhea") return { label:"Diarrhea", ...RED };
+  if (r==="bloating") return { label:"Bloating", ...AMBER };
+  if (r==="spitup") return { label:"Spit-up", ...AMBER };
+  return { label:"Reaction", ...AMBER };
 }
 function riskBadge(r) {
-  if (r==="low")    return { label:"Low risk", ...MINT };
-  if (r==="medium") return { label:"Medium",   ...AMBER };
-  return                   { label:"Allergen",  ...RED };
+  if (r==="low") return { label:"Low risk", ...MINT };
+  if (r==="medium") return { label:"Medium", ...AMBER };
+  return { label:"Allergen", ...RED };
 }
 function buildRoadmap(log, profile) {
   const introduced = new Set(log.map(e=>e.food.trim().toLowerCase()));
@@ -198,13 +144,12 @@ function buildRoadmap(log, profile) {
   const allergyKw = profile ? profile.allergies : [];
   const riskOrder = {low:0,medium:1,high:2};
   return FOOD_DB
-    .filter(f=>!introduced.has(f.food.trim().toLowerCase())&& !allergyKw.some(a=>f.food.toLowerCase().includes(a)))
+    .filter(f=>!introduced.has(f.food.trim().toLowerCase()) && !allergyKw.some(a=>f.food.toLowerCase().includes(a)))
     .sort((a,b)=>{ const dd=deficit[b.category]-deficit[a.category]; return dd!==0?dd:riskOrder[a.risk]-riskOrder[b.risk]; })
     .slice(0,12)
     .map((item,i)=>({ ...item, week:i<2?"This week":i<5?"Week 2":i<8?"Week 3":"Week 4", deficit:deficit[item.category] }));
 }
 
-// ── Shared UI ─────────────────────────────────────────────────────────────────
 const baseInput = { width:"100%", padding:"11px 14px", borderRadius:10, border:"1px solid "+ACCENT_LIGHT, fontSize:14, background:"#fff", color:TEXT_PRIMARY, boxSizing:"border-box", marginTop:6, outline:"none" };
 
 function PrimaryBtn({children,onClick,disabled}) {
@@ -218,28 +163,28 @@ function Badge({label,bg,border,color}) {
 }
 function FoodAvatar({ emoji, size=44 }) {
   return (
-    <div style={{ width:size, height:size, borderRadius:"50%", background:ACCENT_LIGHT, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.5, flexShrink:0,
-      boxShadow:`-3px -3px 8px ${SHADOW_LIGHT}, 3px 3px 8px ${SHADOW_DARK}` }}>
+    <div style={{ width:size, height:size, borderRadius:"50%", background:ACCENT_LIGHT, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.5, flexShrink:0, boxShadow:`-3px -3px 8px ${SHADOW_LIGHT}, 3px 3px 8px ${SHADOW_DARK}` }}>
       {emoji}
     </div>
   );
 }
 
-// ── Product detail sheet ──────────────────────────────────────────────────────
 function ProductSheet({ entry, onClose }) {
   let f = null;
   let enriched = null;
-  if (typeof entry === 'string') {
+  if (typeof entry === "string") {
     f = FOOD_DB.find(x=>x.food===entry);
   } else if (entry && entry.isUnknown && entry.enrichedDescription) {
     enriched = entry;
-    f = { food: entry.food, emoji: entry.emoji, category: entry.category };
+    f = { food:entry.food, emoji:entry.emoji, category:entry.category };
   } else if (entry && entry.food) {
     f = FOOD_DB.find(x=>x.food===entry.food);
+    if (!f) f = { food:entry.food, emoji:entry.emoji||"🍽️", category:entry.category||"vegetable" };
   }
   if (!f) return null;
   const cc = CAT_COLORS[f.category]||MINT;
-  const rb = enriched ? null : riskBadge(FOOD_DB.find(x=>x.food===f.food)?.risk||"low");
+  const dbEntry = FOOD_DB.find(x=>x.food===f.food);
+  const rb = dbEntry ? riskBadge(dbEntry.risk) : null;
   return (
     <div style={{ position:"absolute", inset:0, background:"rgba(92,61,30,0.30)", zIndex:100, display:"flex", alignItems:"flex-end" }} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{ background:BG, borderRadius:"20px 20px 0 0", width:"100%", maxHeight:"80%", overflowY:"auto", padding:"20px 18px 28px" }}>
@@ -249,37 +194,35 @@ function ProductSheet({ entry, onClose }) {
           <div>
             <div style={{ fontSize:20, fontWeight:700, color:TEXT_PRIMARY }}>{f.food}</div>
             <div style={{ display:"flex", gap:6, marginTop:4, flexWrap:"wrap" }}>
-              <Badge label={CAT_LABELS[f.category]} {...cc} />
+              <Badge label={CAT_LABELS[f.category]||f.category} {...cc} />
               {rb && <Badge label={rb.label} bg={rb.bg} border={rb.border} color={rb.color} />}
-              {enriched && <Badge label="Enriched" bg="#FFF4E8" border="#F7C29B" color="#B45A19" />}
+              {enriched && <Badge label="AI enriched" bg="#FFF4E8" border="#F7C29B" color="#B45A19" />}
             </div>
           </div>
         </div>
         {enriched ? (
           <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6, marginBottom:16 }}>{enriched.enrichedDescription}</div>
-        ) : (
+        ) : dbEntry ? (
           <>
-            <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6, marginBottom:16 }}>{FOOD_DB.find(x=>x.food===f.food)?.desc}</div>
+            <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6, marginBottom:16 }}>{dbEntry.desc}</div>
             <div style={{ marginBottom:14 }}>
               <div style={{ fontSize:12, fontWeight:700, color:TEXT_SEC, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Key nutrients</div>
               <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                {FOOD_DB.find(x=>x.food===f.food)?.nutrients.map(n=>(
-                  <span key={n} style={{ fontSize:12, padding:"4px 10px", borderRadius:20, background:cc.bg, border:"0.5px solid "+cc.border, color:cc.text }}>{n}</span>
-                ))}
+                {dbEntry.nutrients.map(n=><span key={n} style={{ fontSize:12, padding:"4px 10px", borderRadius:20, background:cc.bg, border:"0.5px solid "+cc.border, color:cc.text }}>{n}</span>)}
               </div>
             </div>
             <div style={{ marginBottom:16 }}>
               <div style={{ fontSize:12, fontWeight:700, color:TEXT_SEC, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Vitamins</div>
               <div style={{ display:"flex", gap:6 }}>
-                {FOOD_DB.find(x=>x.food===f.food)?.vitamins.map(v=>(
-                  <span key={v} style={{ fontSize:13, fontWeight:600, width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:ACCENT_LIGHT, color:ACCENT }}>{v}</span>
-                ))}
+                {dbEntry.vitamins.map(v=><span key={v} style={{ fontSize:13, fontWeight:600, width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:ACCENT_LIGHT, color:ACCENT }}>{v}</span>)}
               </div>
             </div>
             <div style={{ fontSize:13, color:"#8A6A48", background:"#fff", borderRadius:10, padding:"10px 12px" }}>
-              <span style={{ fontWeight:600 }}>💡 Tip: </span>{FOOD_DB.find(x=>x.food===f.food)?.tip}
+              <span style={{ fontWeight:600 }}>💡 Tip: </span>{dbEntry.tip}
             </div>
           </>
+        ) : (
+          <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6 }}>No details available yet for this food. Try tapping "Enrich descriptions" in the Log tab.</div>
         )}
         <button onClick={onClose} style={{ width:"100%", marginTop:16, padding:"12px", borderRadius:24, border:"none", background:ACCENT_LIGHT, color:ACCENT, fontSize:14, fontWeight:600, cursor:"pointer" }}>Close</button>
       </div>
@@ -287,17 +230,15 @@ function ProductSheet({ entry, onClose }) {
   );
 }
 
-// ── Roadmap tab ───────────────────────────────────────────────────────────────
 function RoadmapTab({ log, profile, onOpenProduct }) {
   const roadmap = buildRoadmap(log, profile);
-  const todayFood    = roadmap[0];
+  const todayFood = roadmap[0];
   const tomorrowFood = roadmap[1];
-  const rest         = roadmap.slice(2);
+  const rest = roadmap.slice(2);
   let lastWeek = null;
 
   return (
     <div>
-      {/* Today / Tomorrow */}
       {(todayFood || tomorrowFood) && (
         <div style={{ ...neu(20), padding:"18px 18px 14px", marginBottom:14 }}>
           {todayFood && (
@@ -309,9 +250,7 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
                   <button onClick={()=>onOpenProduct(todayFood)} style={{ fontSize:17, fontWeight:700, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0, textAlign:"left" }}>{todayFood.food}</button>
                   <div style={{ fontSize:12, color:TEXT_SEC, marginTop:2, lineHeight:1.4 }}>{todayFood.tip}</div>
                   <div style={{ display:"flex", gap:6, marginTop:8, flexWrap:"wrap" }}>
-                    {todayFood.nutrients.slice(0,2).map(n=>(
-                      <span key={n} style={{ fontSize:10, padding:"3px 8px", borderRadius:20, background:ACCENT_LIGHT, color:ACCENT, fontWeight:600 }}>{n}</span>
-                    ))}
+                    {todayFood.nutrients.slice(0,2).map(n=><span key={n} style={{ fontSize:10, padding:"3px 8px", borderRadius:20, background:ACCENT_LIGHT, color:ACCENT, fontWeight:600 }}>{n}</span>)}
                   </div>
                 </div>
               </div>
@@ -319,7 +258,7 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
           )}
           {tomorrowFood && (
             <>
-              <div style={{ height:1, background:`linear-gradient(90deg, transparent, ${SHADOW_DARK}, transparent)`, margin:"14px 0" }} />
+              <div style={{ height:1, background:`linear-gradient(90deg,transparent,${SHADOW_DARK},transparent)`, margin:"14px 0" }} />
               <div style={{ fontSize:11, fontWeight:700, color:TEXT_HINT, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:12 }}>📅 Tomorrow</div>
               <div style={{ display:"flex", alignItems:"center", gap:14 }}>
                 <FoodAvatar emoji={tomorrowFood.emoji} size={52} />
@@ -327,9 +266,7 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
                   <button onClick={()=>onOpenProduct(tomorrowFood)} style={{ fontSize:15, fontWeight:600, color:TEXT_PRIMARY, background:"none", border:"none", cursor:"pointer", padding:0, textAlign:"left" }}>{tomorrowFood.food}</button>
                   <div style={{ fontSize:12, color:TEXT_SEC, marginTop:1 }}>{tomorrowFood.tip}</div>
                   <div style={{ display:"flex", gap:6, marginTop:7, flexWrap:"wrap" }}>
-                    {tomorrowFood.nutrients.slice(0,2).map(n=>(
-                      <span key={n} style={{ fontSize:10, padding:"3px 8px", borderRadius:20, background:ACCENT_LIGHT, color:ACCENT, fontWeight:600 }}>{n}</span>
-                    ))}
+                    {tomorrowFood.nutrients.slice(0,2).map(n=><span key={n} style={{ fontSize:10, padding:"3px 8px", borderRadius:20, background:ACCENT_LIGHT, color:ACCENT, fontWeight:600 }}>{n}</span>)}
                   </div>
                 </div>
               </div>
@@ -337,8 +274,6 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
           )}
         </div>
       )}
-
-      {/* Category balance */}
       <div style={{ ...neu(20), padding:"16px 18px", marginBottom:14 }}>
         <div style={{ fontSize:12, fontWeight:700, color:TEXT_PRIMARY, marginBottom:12 }}>Category balance</div>
         {CATEGORIES.map(cat=>{
@@ -355,11 +290,9 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
           );
         })}
       </div>
-
-      {/* Remaining roadmap grouped by week */}
       {rest.map((item,i)=>{
         const showWeek = item.week!==lastWeek; lastWeek=item.week;
-        const rb=riskBadge(item.risk); const cc=CAT_COLORS[item.category];
+        const rb = riskBadge(item.risk); const cc = CAT_COLORS[item.category];
         return (
           <div key={i}>
             {showWeek && <div style={{ fontSize:11, fontWeight:700, color:TEXT_HINT, marginBottom:8, marginTop:i===0?2:14, textTransform:"uppercase", letterSpacing:"0.08em", paddingLeft:4 }}>{item.week}</div>}
@@ -382,10 +315,9 @@ function RoadmapTab({ log, profile, onOpenProduct }) {
   );
 }
 
-// ── Log tab ───────────────────────────────────────────────────────────────────
 function LogTab({ log, setLog, onOpenProduct }) {
   const [showAdd, setShowAdd] = useState(false);
-  const [entry, setEntry]     = useState({ food:"", emoji:"🍽️", category:"vegetable", reaction:"none", notes:"" });
+  const [entry, setEntry] = useState({ food:"", emoji:"🍽️", category:"vegetable", reaction:"none", notes:"" });
   const [suggestions, setSuggestions] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
@@ -403,14 +335,12 @@ function LogTab({ log, setLog, onOpenProduct }) {
     setSuggestions([]);
     setError("");
   };
-
   const normalizeFood = (food) => food.trim().toLowerCase();
   const isDuplicateFood = (food, currentId) => {
     const normalized = normalizeFood(food);
-    return log.some(item => item.food.trim().toLowerCase() === normalized && item.id !== currentId);
+    return log.some(item=>item.food.trim().toLowerCase()===normalized && item.id!==currentId);
   };
-  const isUnknownFood = (food) => !FOOD_DB.some(item => normalizeFood(item.food) === normalizeFood(food));
-
+  const isUnknownFood = (food) => !FOOD_DB.some(item=>normalizeFood(item.food)===normalizeFood(food));
   const resetForm = () => {
     setEntry({ food:"", emoji:"🍽️", category:"vegetable", reaction:"none", notes:"" });
     setSuggestions([]);
@@ -418,48 +348,26 @@ function LogTab({ log, setLog, onOpenProduct }) {
     setError("");
     setShowAdd(false);
   };
-
   const getMockEnrichment = (item) => {
     const category = item.category ? CAT_LABELS[item.category].toLowerCase().replace(/s$/,"") : "food";
     return `Demo enrichment for ${item.food}: this ${category} can be introduced in small, soft portions and is generally gentle on baby tummies. Track notes and adjust texture based on response.`;
   };
-
   const enrichUnknownFoods = () => {
-    if (!log.some(item => item.isUnknown)) return;
+    if (!log.some(item=>item.isUnknown)) return;
     setEnriching(true);
-    window.setTimeout(() => {
-      setLog(currentLog => currentLog.map(item => item.isUnknown ? {
-        ...item,
-        enrichedDescription: item.enrichedDescription || getMockEnrichment(item),
-      } : item));
+    window.setTimeout(()=>{
+      setLog(currentLog=>currentLog.map(item=>item.isUnknown ? { ...item, enrichedDescription: item.enrichedDescription || getMockEnrichment(item) } : item));
       setEnriching(false);
     }, 500);
   };
-
   const saveEntry = () => {
-    if (!entry.food.trim()) {
-      setError("Please enter a food name.");
-      return;
-    }
-    if (isDuplicateFood(entry.food, editingId)) {
-      setError("This food is already logged. Duplicate entries are not allowed.");
-      return;
-    }
+    if (!entry.food.trim()) { setError("Please enter a food name."); return; }
+    if (isDuplicateFood(entry.food, editingId)) { setError("This food is already logged. Duplicate entries are not allowed."); return; }
     const unknown = isUnknownFood(entry.food);
-    const newEntry = {
-      ...entry,
-      id: editingId || Date.now(),
-      date: new Date().toISOString().slice(0,10),
-      isUnknown: unknown,
-      enrichedDescription: unknown ? undefined : undefined,
-    };
-    setLog(l => editingId
-      ? l.map(item => item.id === editingId ? { ...item, ...newEntry, date: item.date } : item)
-      : [newEntry, ...l]
-    );
+    const newEntry = { ...entry, id:editingId||Date.now(), date:new Date().toISOString().slice(0,10), isUnknown:unknown };
+    setLog(l=>editingId ? l.map(item=>item.id===editingId ? {...item,...newEntry,date:item.date} : item) : [newEntry,...l]);
     resetForm();
   };
-
   const editEntry = (item) => {
     setEntry({ food:item.food, emoji:item.emoji, category:item.category, reaction:item.reaction, notes:item.notes });
     setEditingId(item.id);
@@ -478,7 +386,7 @@ function LogTab({ log, setLog, onOpenProduct }) {
       </button>
       {showAdd && (
         <div style={{ ...neu(16,6), background:"#fff", marginBottom:12, padding:"14px" }}>
-          <div style={{ fontSize:13, fontWeight:700, color:ACCENT, marginBottom:10 }}>{editingId ? "Edit food entry" : "New food entry"}</div>
+          <div style={{ fontSize:13, fontWeight:700, color:ACCENT, marginBottom:10 }}>{editingId?"Edit food entry":"New food entry"}</div>
           {error && <div style={{ fontSize:12, color:RED.text, background:RED.bg, border:"1px solid "+RED.border, borderRadius:8, padding:"10px 12px", marginBottom:10 }}>{error}</div>}
           <div style={{ position:"relative" }}>
             <input placeholder="Food name — start typing to search…" value={entry.food}
@@ -501,16 +409,13 @@ function LogTab({ log, setLog, onOpenProduct }) {
               </div>
             )}
           </div>
-          <select value={entry.category} onChange={e=>setEntry(n=>({...n,category:e.target.value}))}
-            style={{ ...baseInput, marginBottom:8 }}>
+          <select value={entry.category} onChange={e=>setEntry(n=>({...n,category:e.target.value}))} style={{ ...baseInput, marginBottom:8 }}>
             {CATEGORIES.map(c=><option key={c} value={c}>{CAT_EMOJI[c]+" "+CAT_LABELS[c]}</option>)}
           </select>
-          <select value={entry.reaction} onChange={e=>setEntry(n=>({...n,reaction:e.target.value}))}
-            style={{ ...baseInput, marginBottom:8 }}>
+          <select value={entry.reaction} onChange={e=>setEntry(n=>({...n,reaction:e.target.value}))} style={{ ...baseInput, marginBottom:8 }}>
             {REACTION_OPTIONS.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
-          <input placeholder="Notes (optional)" value={entry.notes} onChange={e=>setEntry(n=>({...n,notes:e.target.value}))}
-            style={{ ...baseInput, marginBottom:10 }} />
+          <input placeholder="Notes (optional)" value={entry.notes} onChange={e=>setEntry(n=>({...n,notes:e.target.value}))} style={{ ...baseInput, marginBottom:10 }} />
           <div style={{ display:"flex", gap:8 }}>
             <button onClick={saveEntry} style={{ flex:1, padding:10, borderRadius:20, background:ACCENT, border:"none", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}>Save</button>
             <button onClick={resetForm} style={{ flex:1, padding:10, borderRadius:20, background:ACCENT_LIGHT, border:"none", color:ACCENT, fontSize:13, fontWeight:600, cursor:"pointer" }}>Cancel</button>
@@ -518,12 +423,13 @@ function LogTab({ log, setLog, onOpenProduct }) {
         </div>
       )}
       <div style={{ marginBottom:12, display:"flex", gap:10, alignItems:"center" }}>
-        <button onClick={enrichUnknownFoods} disabled={enriching || !log.some(item => item.isUnknown && !item.enrichedDescription)}
-          style={{ flex:1, padding:12, borderRadius:20, background:enriching ? "#f0e6da" : ACCENT, border:"none", color:enriching ? "#b89f80" : "#fff", fontSize:13, fontWeight:700, cursor:enriching ? "not-allowed" : "pointer" }}>
-          {enriching ? "Enriching…" : "Enrich descriptions (demo mode)"}
+        <button onClick={enrichUnknownFoods}
+          disabled={enriching || !log.some(item=>item.isUnknown && !item.enrichedDescription)}
+          style={{ flex:1, padding:12, borderRadius:20, background:enriching?"#f0e6da":ACCENT, border:"none", color:enriching?"#b89f80":"#fff", fontSize:13, fontWeight:700, cursor:enriching?"not-allowed":"pointer" }}>
+          {enriching?"Enriching…":"Enrich descriptions (demo)"}
         </button>
         <div style={{ fontSize:12, color:TEXT_SEC, lineHeight:1.4 }}>
-          {log.some(item => item.isUnknown) ? `${log.filter(item => item.isUnknown).length} food(s) need enrichment` : "No unknown foods yet"}
+          {log.some(item=>item.isUnknown) ? `${log.filter(item=>item.isUnknown).length} food(s) need enrichment` : "No unknown foods yet"}
         </div>
       </div>
       {log.map(e=>{
@@ -551,10 +457,9 @@ function LogTab({ log, setLog, onOpenProduct }) {
   );
 }
 
-// ── Chat tab ──────────────────────────────────────────────────────────────────
 function ChatTab({ log, profile }) {
   const [messages, setMessages] = useState([{ role:"assistant", text:"Hi! I'm your Growing Taste AI 🍑 I know your baby's profile and food history. Ask me anything about weaning!" }]);
-  const [input, setInput]   = useState("");
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const endRef = useRef(null);
   useEffect(()=>{ endRef.current?.scrollIntoView({behavior:"smooth"}); },[messages]);
@@ -591,7 +496,7 @@ function ChatTab({ log, profile }) {
         <div ref={endRef} />
       </div>
       <div style={{ display:"flex", gap:6, marginBottom:8, flexWrap:"wrap" }}>
-        {["Why the rash?","What to cook today?","Is egg safe?"].map(q=>(
+        {['Why the rash?','What to cook today?','Is egg safe?'].map(q=>(
           <button key={q} onClick={()=>send(q)} style={{ ...neu(20,4), fontSize:11, padding:"6px 12px", border:"none", color:TEXT_SEC, cursor:"pointer" }}>{q}</button>
         ))}
       </div>
@@ -605,7 +510,6 @@ function ChatTab({ log, profile }) {
   );
 }
 
-// ── Profile tab ───────────────────────────────────────────────────────────────
 function ProfileTab({ profile, setProfile }) {
   const [draft, setDraft] = useState(null);
   const p = draft||profile; const editing=!!draft;
@@ -616,17 +520,15 @@ function ProfileTab({ profile, setProfile }) {
         <div style={{ width:72, height:72, borderRadius:"50%", ...neuInset(36), display:"flex", alignItems:"center", justifyContent:"center", fontSize:36, marginBottom:8 }}>👶</div>
         {editing
           ? <input value={p.name} onChange={e=>setDraft(d=>({...d,name:e.target.value}))} style={{ textAlign:"center", fontWeight:700, fontSize:18, border:"none", borderBottom:"1px solid "+ACCENT_LIGHT, background:"transparent", color:TEXT_PRIMARY, width:140, outline:"none" }} />
-          : <div style={{ fontSize:18, fontWeight:700, color:TEXT_PRIMARY }}>{p.name}</div>
-        }
+          : <div style={{ fontSize:18, fontWeight:700, color:TEXT_PRIMARY }}>{p.name}</div>}
         <div style={{ fontSize:13, color:TEXT_SEC, marginTop:2 }}>{getAgeLabel(p.dob)}</div>
       </div>
       <div style={{ ...neu(16,6), padding:"13px 16px", marginBottom:10 }}>
         <div style={{ fontSize:11, color:TEXT_SEC, marginBottom:4 }}>Date of birth</div>
         {editing
           ? <input type="text" placeholder="DD/MM/YYYY" value={p.dob} onChange={e=>{ let v=e.target.value.replace(/\D/g,""); if(v.length>2)v=v.slice(0,2)+"/"+v.slice(2); if(v.length>5)v=v.slice(0,5)+"/"+v.slice(5); setDraft(d=>({...d,dob:v.slice(0,10)})); }} style={{ ...baseInput, marginTop:0 }} />
-          : <div style={{ fontSize:14, color:TEXT_PRIMARY }}>{formatDobDisplay(p.dob)}</div>
-        }
-        {ageM<6  && <div style={{ marginTop:6, fontSize:12, padding:"4px 10px", borderRadius:6, ...AMBER }}>WHO recommends starting solids at 6 months</div>}
+          : <div style={{ fontSize:14, color:TEXT_PRIMARY }}>{formatDobDisplay(p.dob)}</div>}
+        {ageM<6 && <div style={{ marginTop:6, fontSize:12, padding:"4px 10px", borderRadius:6, ...AMBER }}>WHO recommends starting solids at 6 months</div>}
         {ageM>=6 && ageM<12 && <div style={{ marginTop:6, fontSize:12, padding:"4px 10px", borderRadius:6, ...MINT }}>Great age for weaning — exploring textures!</div>}
       </div>
       <div style={{ ...neu(16,6), padding:"13px 16px", marginBottom:10 }}>
@@ -670,13 +572,11 @@ function ProfileTab({ profile, setProfile }) {
             <button onClick={()=>{setProfile(draft);setDraft(null);}} style={{ flex:1, padding:12, borderRadius:20, background:ACCENT, border:"none", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer" }}>Save</button>
             <button onClick={()=>setDraft(null)} style={{ flex:1, padding:12, borderRadius:20, background:ACCENT_LIGHT, border:"none", color:ACCENT, fontSize:14, fontWeight:600, cursor:"pointer" }}>Cancel</button>
           </div>
-        : <button onClick={()=>setDraft({...profile})} style={{ width:"100%", marginBottom:16, padding:12, borderRadius:20, background:ACCENT_LIGHT, border:"none", color:ACCENT, fontSize:14, fontWeight:700, cursor:"pointer" }}>Edit profile</button>
-      }
+        : <button onClick={()=>setDraft({...profile})} style={{ width:"100%", marginBottom:16, padding:12, borderRadius:20, background:ACCENT_LIGHT, border:"none", color:ACCENT, fontSize:14, fontWeight:700, cursor:"pointer" }}>Edit profile</button>}
     </div>
   );
 }
 
-// ── Main app shell ────────────────────────────────────────────────────────────
 const NAV = [["📍","Roadmap"],["📓","Log"],["🤖","AI Chat"],["👶","Profile"]];
 
 function MainApp({ initProfile, onSignOut }) {
@@ -687,7 +587,7 @@ function MainApp({ initProfile, onSignOut }) {
 
   return (
     <div style={{ fontFamily:"system-ui,sans-serif", maxWidth:380, margin:"0 auto", display:"flex", flexDirection:"column", height:640, position:"relative", background:BG }}>
-      <div style={{ padding:"16px 18px 12px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+      <div style={{ padding:"16px 18px 12px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid #F5DEC8" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ ...neu(16,5), width:42, height:42, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>
             <img src="/icon.png" style={{ width:42, height:42, borderRadius:14, objectFit:"cover" }} alt="Growing Taste" />
@@ -707,7 +607,7 @@ function MainApp({ initProfile, onSignOut }) {
         {tab===3 && <ProfileTab profile={profile} setProfile={p=>setProfile(p)} />}
       </div>
 
-      <div style={{ display:"flex", gap:8, padding:"12px 18px 18px" }}>
+      <div style={{ display:"flex", gap:8, padding:"12px 18px 18px", background:"#FFF6EE", borderTop:"1px solid #F5DEC8", boxShadow:`0 -4px 16px rgba(214,178,140,0.18)` }}>
         {NAV.map(([icon,label],i)=>(
           <button key={i} onClick={()=>setTab(i)} style={{ ...neuBtn(tab===i), flex:1, padding:"9px 4px", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:3, fontSize:10, fontWeight:600 }}>
             <span style={{ fontSize:16 }}>{icon}</span>
@@ -721,7 +621,6 @@ function MainApp({ initProfile, onSignOut }) {
   );
 }
 
-// ── Onboarding shell ──────────────────────────────────────────────────────────
 function OnboardingShell({ step, title, subtitle, children }) {
   const idx = FLOW_STEPS.indexOf(step);
   return (
@@ -748,7 +647,6 @@ function OnboardingShell({ step, title, subtitle, children }) {
   );
 }
 
-// ── Root ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const [screen, setScreen]     = useState("welcome");
   const [isSignIn, setIsSignIn] = useState(false);
