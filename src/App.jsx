@@ -63,12 +63,27 @@ const FOOD_DB = [
 ];
 
 const INITIAL_LOG = [
-  { id:1, date:"2024-06-01", food:"Sweet potato", emoji:"🍠", category:"vegetable", reaction:"none", notes:"Loved it!" },
-  { id:2, date:"2024-06-02", food:"Carrot", emoji:"🥕", category:"vegetable", reaction:"none", notes:"Ate half" },
-  { id:3, date:"2024-06-03", food:"Chicken", emoji:"🍗", category:"protein", reaction:"none", notes:"Shredded finely" },
-  { id:4, date:"2024-06-04", food:"Beef", emoji:"🥩", category:"protein", reaction:"none", notes:"Slow cooked" },
-  { id:5, date:"2024-06-05", food:"Apple", emoji:"🍎", category:"fruit", reaction:"none", notes:"Finger food attempt" },
-  { id:6, date:"2024-06-06", food:"Oats", emoji:"🌾", category:"carb", reaction:"mild", notes:"Small rash on chin" },
+  { id:1, date:"2026-06-25", food:"Beef", emoji:"🥩", category:"protein", reaction:"none", notes:"Introduced successfully." },
+  { id:2, date:"2026-06-26", food:"Chicken", emoji:"🍗", category:"protein", reaction:"none", notes:"Introduced successfully." },
+  { id:3, date:"2026-06-27", food:"Turkey", emoji:"🍗", category:"protein", reaction:"none", notes:"Introduced successfully." },
+  { id:4, date:"2026-06-28", food:"Cod", emoji:"🐟", category:"protein", reaction:"none", notes:"Introduced successfully." },
+  { id:5, date:"2026-06-29", food:"Salmon", emoji:"🐟", category:"protein", reaction:"none", notes:"Introduced successfully." },
+  { id:6, date:"2026-06-30", food:"Egg yolk", emoji:"🥚", category:"allergen", reaction:"none", notes:"Introduced successfully." },
+  { id:7, date:"2026-07-01", food:"Yoghurt", emoji:"🥛", category:"dairy", reaction:"none", notes:"Introduced successfully." },
+  { id:8, date:"2026-07-02", food:"Butter", emoji:"🧈", category:"dairy", reaction:"mild", notes:"Mild allergic reaction" },
+  { id:9, date:"2026-07-03", food:"Avocado", emoji:"🥑", category:"fruit", reaction:"none", notes:"Introduced successfully." },
+  { id:10, date:"2026-07-04", food:"Apple", emoji:"🍎", category:"fruit", reaction:"none", notes:"" },
+  { id:11, date:"2026-07-05", food:"Pear", emoji:"🍐", category:"fruit", reaction:"none", notes:"" },
+  { id:12, date:"2026-07-06", food:"Banana", emoji:"🍌", category:"fruit", reaction:"mild", notes:"Mild allergic reaction" },
+  { id:13, date:"2026-07-07", food:"Peach", emoji:"🍑", category:"fruit", reaction:"mild", notes:"Mild allergic reaction" },
+  { id:14, date:"2026-07-08", food:"Sweet potato", emoji:"🍠", category:"vegetable", reaction:"none", notes:"Introduced successfully." },
+  { id:15, date:"2026-07-09", food:"Pasta", emoji:"🍝", category:"carb", reaction:"none", notes:"Introduced successfully." },
+  { id:16, date:"2026-07-10", food:"Oats", emoji:"🌾", category:"carb", reaction:"none", notes:"" },
+  { id:17, date:"2026-07-11", food:"Rice", emoji:"🍚", category:"carb", reaction:"constipation", notes:"" },
+  { id:18, date:"2026-07-12", food:"Potato", emoji:"🥔", category:"carb", reaction:"none", notes:"" },
+  { id:19, date:"2026-07-13", food:"Carrot", emoji:"🥕", category:"vegetable", reaction:"constipation", notes:"" },
+  { id:20, date:"2026-07-14", food:"Cauliflower", emoji:"🥦", category:"vegetable", reaction:"bloating", notes:"Gas reaction" },
+  { id:21, date:"2026-07-15", food:"Broccoli", emoji:"🥦", category:"vegetable", reaction:"bloating", notes:"Gas reaction" },
 ];
 
 const CATEGORIES = ["vegetable","fruit","carb","protein","dairy","allergen"];
@@ -107,7 +122,7 @@ const LLM_OPTIONS = [
   },
   { id:"gemma", name:"Local Gemma (Ollama)", emoji:"🦙", hint:"Ollama local server at http://localhost:11434", placeholder:"(No API key required)", color:BLUE,
     models:[
-      { id:"gemma", label:"Gemma", desc:"Local Gemma model" }
+      { id:"gemma2:2b", label:"Gemma 2", desc:"Local Gemma 2 model" }
     ]
   },
 ];
@@ -164,6 +179,7 @@ function buildRoadmap(log, profile) {
   const deficit = Object.fromEntries(CATEGORIES.map(c=>[c,max-countByCat[c]]));
   const allergyKw = profile ? profile.allergies : [];
   const riskOrder = {low:0,medium:1,high:2};
+  
   return FOOD_DB
     .filter(f=>!introduced.has(f.food.trim().toLowerCase()) && !allergyKw.some(a=>f.food.toLowerCase().includes(a)))
     .sort((a,b)=>{ const dd=deficit[b.category]-deficit[a.category]; return dd!==0?dd:riskOrder[a.risk]-riskOrder[b.risk]; })
@@ -596,7 +612,7 @@ function ChatTab({ log, profile, llmConfig, onSendPreset }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: llmConfig?.model || "gemma",
+            model: llmConfig?.model || "gemma2:2b",
             messages: [
               { role: "system", content: "You are a concise summariser." },
               { role: "user", content: summaryPrompt }
@@ -645,7 +661,7 @@ function ChatTab({ log, profile, llmConfig, onSendPreset }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: llmConfig?.model || "gemma",
+            model: llmConfig?.model || "gemma2:2b",
             messages: [
               { role: "system", content: systemPromptText },
               ...windowMessages.map(m=>({role:m.role, content:m.text})),
@@ -1034,8 +1050,8 @@ export default function App() {
               )}
               {selectedLLM === "gemma" && (
                 <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize:12, color:ACCENT, marginBottom:6 }}>Model name in Ollama (default: gemma)</div>
-                  <input type="text" placeholder="e.g. gemma, gemma:2b, llama3" value={selectedModel || ""}
+                  <div style={{ fontSize:12, color:ACCENT, marginBottom:6 }}>Model name in Ollama (default: gemma2:2b)</div>
+                  <input type="text" placeholder="e.g. gemma2:2b, llama3" value={selectedModel || ""}
                     onChange={e=>setSModel(e.target.value)}
                     style={{ ...baseInput, marginTop:0, fontFamily:"monospace", fontSize:12 }} />
                 </div>
