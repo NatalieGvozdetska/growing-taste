@@ -33,32 +33,33 @@ const neuBtn = (active) => ({
 });
 
 const FOOD_DB = [
-  { food:"Sweet potato", emoji:"🍠", category:"vegetable", risk:"low", tip:"Steam & mash. Great first food.", nutrients:["Beta-carotene","Vitamin C","Potassium","Fibre"], vitamins:["A","C","B6"], desc:"One of the best first foods — naturally sweet, easy to digest, and packed with beta-carotene for eye and immune health." },
-  { food:"Carrot", emoji:"🥕", category:"vegetable", risk:"low", tip:"Boil soft, purée or finger food.", nutrients:["Beta-carotene","Vitamin K","Potassium","Fibre"], vitamins:["A","K","B6"], desc:"Rich in beta-carotene which converts to Vitamin A, supporting vision and immune function. Naturally sweet." },
-  { food:"Broccoli", emoji:"🥦", category:"vegetable", risk:"low", tip:"Steam florets until very soft.", nutrients:["Vitamin C","Folate","Iron","Calcium"], vitamins:["C","K","B9"], desc:"A nutritional powerhouse with iron and calcium. Great as a BLW finger food when steamed soft." },
-  { food:"Courgette", emoji:"🥒", category:"vegetable", risk:"low", tip:"Sauté and blend or serve as fingers.", nutrients:["Vitamin C","Folate","Potassium","Water"], vitamins:["C","B9"], desc:"High water content makes it easy to digest and hydrating. Mild flavour pairs well with other vegetables." },
-  { food:"Spinach", emoji:"🌿", category:"vegetable", risk:"low", tip:"Wilt and blend into purées.", nutrients:["Iron","Calcium","Folate","Vitamin K"], vitamins:["A","C","K","B9"], desc:"Excellent source of non-haem iron — pair with Vitamin C foods to boost absorption." },
-  { food:"Apple", emoji:"🍎", category:"fruit", risk:"low", tip:"Bake or stew to soften.", nutrients:["Vitamin C","Fibre","Quercetin","Natural sugars"], vitamins:["C"], desc:"A classic first fruit. High in pectin fibre which supports digestion." },
-  { food:"Pear", emoji:"🍐", category:"fruit", risk:"low", tip:"Ripe pear can be served raw, grated.", nutrients:["Fibre","Vitamin C","Copper","Potassium"], vitamins:["C","K"], desc:"Very gentle on tiny tummies and naturally helpful for constipation." },
-  { food:"Banana", emoji:"🍌", category:"fruit", risk:"low", tip:"Mash or serve as finger food strips.", nutrients:["Potassium","Vitamin B6","Magnesium","Natural sugars"], vitamins:["B6","C"], desc:"Energy-dense and easy to prepare — no cooking needed." },
-  { food:"Mango", emoji:"🥭", category:"fruit", risk:"low", tip:"Ripe and soft — great finger food.", nutrients:["Vitamin C","Beta-carotene","Folate","Fibre"], vitamins:["A","C","B9"], desc:"Exceptionally high in Vitamin C and beta-carotene. Ripe mango is naturally soft." },
-  { food:"Blueberries", emoji:"🫐", category:"fruit", risk:"low", tip:"Squish before serving to reduce choking risk.", nutrients:["Antioxidants","Vitamin C","Vitamin K","Fibre"], vitamins:["C","K"], desc:"Rich in antioxidants that support brain development. Always squish or halve before serving." },
-  { food:"Oats", emoji:"🌾", category:"carb", risk:"low", tip:"Cook into smooth porridge.", nutrients:["Beta-glucan fibre","Iron","Zinc","B vitamins"], vitamins:["B1","B5"], desc:"A brilliant breakfast base — slow-release energy and soluble fibre supports stable blood sugar." },
-  { food:"Rice", emoji:"🍚", category:"carb", risk:"low", tip:"Well-cooked soft rice or rice porridge.", nutrients:["Carbohydrates","B vitamins","Magnesium","Iron (fortified)"], vitamins:["B1","B3"], desc:"Easy to digest and rarely allergenic. Baby rice cereal is often fortified with iron." },
-  { food:"Pasta", emoji:"🍝", category:"carb", risk:"low", tip:"Cook very soft; small shapes work best.", nutrients:["Carbohydrates","B vitamins","Iron (enriched)","Folate"], vitamins:["B1","B9"], desc:"A versatile carb that pairs with almost any sauce. Cook until very soft." },
-  { food:"Bread", emoji:"🍞", category:"carb", risk:"low", tip:"Soft wholemeal strips for BLW.", nutrients:["Carbohydrates","B vitamins","Iron","Fibre (wholemeal)"], vitamins:["B1","B3"], desc:"Wholemeal bread offers more fibre and nutrients than white. Good for BLW as toast fingers." },
-  { food:"Potato", emoji:"🥔", category:"carb", risk:"low", tip:"Boil and mash with breast milk.", nutrients:["Vitamin C","Potassium","B6","Carbohydrates"], vitamins:["C","B6"], desc:"Filling and versatile. Boiled and mashed with breast milk or formula creates a smooth, familiar taste." },
-  { food:"Chicken", emoji:"🍗", category:"protein", risk:"low", tip:"Slow-cook until very tender, shred finely.", nutrients:["Protein","Iron","Zinc","B vitamins"], vitamins:["B3","B6","B12"], desc:"Excellent source of haem iron and zinc for immune function." },
-  { food:"Lentils", emoji:"🫘", category:"protein", risk:"low", tip:"Red lentil purée is easy to digest.", nutrients:["Plant protein","Iron","Folate","Fibre"], vitamins:["B9","B1"], desc:"A plant-based protein powerhouse. Red lentils cook quickly and blend into a smooth purée." },
-  { food:"Beef", emoji:"🥩", category:"protein", risk:"low", tip:"Slow-cook and blend or shred.", nutrients:["Haem iron","Zinc","Protein","B12"], vitamins:["B12","B3","B6"], desc:"One of the best sources of haem iron and B12 for brain development." },
-  { food:"Tofu", emoji:"🧊", category:"protein", risk:"low", tip:"Soft silken tofu — easy to grab.", nutrients:["Plant protein","Calcium","Iron","Isoflavones"], vitamins:["B1"], desc:"Silken tofu is naturally soft — no cooking needed. Good plant-based source of calcium and protein." },
-  { food:"Salmon", emoji:"🐟", category:"protein", risk:"medium", tip:"Rich in omega-3, flake finely.", nutrients:["Omega-3 (DHA/EPA)","Protein","Vitamin D","B12"], vitamins:["D","B12","B3"], desc:"Outstanding source of DHA omega-3 for brain and eye development." },
-  { food:"Yoghurt", emoji:"🥛", category:"dairy", risk:"medium", tip:"Full-fat plain yoghurt, no added sugar.", nutrients:["Calcium","Protein","Probiotics","B12"], vitamins:["B12","B2"], desc:"Full-fat plain yoghurt provides calcium for bone development and probiotics for gut health." },
-  { food:"Cheese", emoji:"🧀", category:"dairy", risk:"medium", tip:"Grated mild cheddar on soft food.", nutrients:["Calcium","Protein","Fat","Vitamin A"], vitamins:["A","B12","B2"], desc:"Calcium-dense and flavourful. Choose mild, full-fat varieties." },
-  { food:"Egg yolk", emoji:"🥚", category:"allergen", risk:"medium", tip:"Introduce allergen early.", nutrients:["Choline","Vitamin D","Lutein","Protein"], vitamins:["D","B12","A"], desc:"Rich in choline, critical for brain development. Early introduction is now recommended." },
-  { food:"Peanut butter", emoji:"🥜", category:"allergen", risk:"high", tip:"Dilute with water first.", nutrients:["Healthy fats","Protein","Niacin","Magnesium"], vitamins:["E","B3"], desc:"Early introduction (from ~6 months) significantly reduces peanut allergy risk." },
-  { food:"Wheat", emoji:"🌾", category:"allergen", risk:"medium", tip:"Soft bread or pasta — watch for reaction.", nutrients:["Carbohydrates","B vitamins","Iron","Fibre"], vitamins:["B1","B9"], desc:"Gluten-containing grain. Introduce gradually via soft bread or pasta." },
-  { food:"Sesame", emoji:"🫙", category:"allergen", risk:"high", tip:"Tiny amount of tahini mixed in food.", nutrients:["Calcium","Healthy fats","Protein","Iron"], vitamins:["B1","E"], desc:"One of the top 14 allergens. Introduce via a tiny amount of tahini mixed into food." },
+  { food:"Sweet potato", emoji:"🍠", category:"vegetable", risk:"low", gasRisk:false, tip:"Steam & mash. Great first food.", nutrients:["Beta-carotene","Vitamin C","Potassium","Fibre"], vitamins:["A","C","B6"], desc:"One of the best first foods — naturally sweet, easy to digest, and packed with beta-carotene for eye and immune health." },
+  { food:"Carrot", emoji:"🥕", category:"vegetable", risk:"low", gasRisk:false, tip:"Boil soft, purée or finger food.", nutrients:["Beta-carotene","Vitamin K","Potassium","Fibre"], vitamins:["A","K","B6"], desc:"Rich in beta-carotene which converts to Vitamin A, supporting vision and immune function. Naturally sweet." },
+  { food:"Broccoli", emoji:"🥦", category:"vegetable", risk:"low", gasRisk:true, tip:"Steam florets until very soft. Start with small amounts to avoid gas.", nutrients:["Vitamin C","Folate","Iron","Calcium"], vitamins:["C","K","B9"], desc:"A nutritional powerhouse with iron and calcium. Can cause gas — start with tiny portions and increase gradually." },
+  { food:"Cauliflower", emoji:"🥦", category:"vegetable", risk:"low", gasRisk:true, tip:"Steam until very soft. Introduce in tiny portions — can cause gas.", nutrients:["Vitamin C","Folate","Vitamin K","Fibre"], vitamins:["C","K","B9"], desc:"Nutritious but a known gas producer. Introduce in small amounts and watch for bloating." },
+  { food:"Courgette", emoji:"🥒", category:"vegetable", risk:"low", gasRisk:false, tip:"Sauté and blend or serve as fingers.", nutrients:["Vitamin C","Folate","Potassium","Water"], vitamins:["C","B9"], desc:"High water content makes it easy to digest and hydrating. Mild flavour pairs well with other vegetables." },
+  { food:"Spinach", emoji:"🌿", category:"vegetable", risk:"low", gasRisk:false, tip:"Wilt and blend into purées.", nutrients:["Iron","Calcium","Folate","Vitamin K"], vitamins:["A","C","K","B9"], desc:"Excellent source of non-haem iron — pair with Vitamin C foods to boost absorption." },
+  { food:"Apple", emoji:"🍎", category:"fruit", risk:"low", gasRisk:false, tip:"Bake or stew to soften.", nutrients:["Vitamin C","Fibre","Quercetin","Natural sugars"], vitamins:["C"], desc:"A classic first fruit. High in pectin fibre which supports digestion." },
+  { food:"Pear", emoji:"🍐", category:"fruit", risk:"low", gasRisk:false, tip:"Ripe pear can be served raw, grated.", nutrients:["Fibre","Vitamin C","Copper","Potassium"], vitamins:["C","K"], desc:"Very gentle on tiny tummies and naturally helpful for constipation." },
+  { food:"Banana", emoji:"🍌", category:"fruit", risk:"low", gasRisk:false, tip:"Mash or serve as finger food strips.", nutrients:["Potassium","Vitamin B6","Magnesium","Natural sugars"], vitamins:["B6","C"], desc:"Energy-dense and easy to prepare — no cooking needed." },
+  { food:"Mango", emoji:"🥭", category:"fruit", risk:"low", gasRisk:false, tip:"Ripe and soft — great finger food.", nutrients:["Vitamin C","Beta-carotene","Folate","Fibre"], vitamins:["A","C","B9"], desc:"Exceptionally high in Vitamin C and beta-carotene. Ripe mango is naturally soft." },
+  { food:"Blueberries", emoji:"🫐", category:"fruit", risk:"low", gasRisk:false, tip:"Squish before serving to reduce choking risk.", nutrients:["Antioxidants","Vitamin C","Vitamin K","Fibre"], vitamins:["C","K"], desc:"Rich in antioxidants that support brain development. Always squish or halve before serving." },
+  { food:"Oats", emoji:"🌾", category:"carb", risk:"low", gasRisk:false, tip:"Cook into smooth porridge.", nutrients:["Beta-glucan fibre","Iron","Zinc","B vitamins"], vitamins:["B1","B5"], desc:"A brilliant breakfast base — slow-release energy and soluble fibre supports stable blood sugar." },
+  { food:"Rice", emoji:"🍚", category:"carb", risk:"low", gasRisk:false, tip:"Well-cooked soft rice or rice porridge.", nutrients:["Carbohydrates","B vitamins","Magnesium","Iron (fortified)"], vitamins:["B1","B3"], desc:"Easy to digest and rarely allergenic. Baby rice cereal is often fortified with iron." },
+  { food:"Pasta", emoji:"🍝", category:"carb", risk:"low", gasRisk:false, tip:"Cook very soft; small shapes work best.", nutrients:["Carbohydrates","B vitamins","Iron (enriched)","Folate"], vitamins:["B1","B9"], desc:"A versatile carb that pairs with almost any sauce. Cook until very soft." },
+  { food:"Bread", emoji:"🍞", category:"carb", risk:"low", gasRisk:false, tip:"Soft wholemeal strips for BLW.", nutrients:["Carbohydrates","B vitamins","Iron","Fibre (wholemeal)"], vitamins:["B1","B3"], desc:"Wholemeal bread offers more fibre and nutrients than white. Good for BLW as toast fingers." },
+  { food:"Potato", emoji:"🥔", category:"carb", risk:"low", gasRisk:false, tip:"Boil and mash with breast milk.", nutrients:["Vitamin C","Potassium","B6","Carbohydrates"], vitamins:["C","B6"], desc:"Filling and versatile. Boiled and mashed with breast milk or formula creates a smooth, familiar taste." },
+  { food:"Chicken", emoji:"🍗", category:"protein", risk:"low", gasRisk:false, tip:"Slow-cook until very tender, shred finely.", nutrients:["Protein","Iron","Zinc","B vitamins"], vitamins:["B3","B6","B12"], desc:"Excellent source of haem iron and zinc for immune function." },
+  { food:"Lentils", emoji:"🫘", category:"protein", risk:"low", gasRisk:true, tip:"Red lentil purée is easy to digest. Introduce in small amounts — can cause gas.", nutrients:["Plant protein","Iron","Folate","Fibre"], vitamins:["B9","B1"], desc:"A plant-based protein powerhouse. Red lentils cook quickly and blend into a smooth purée. Can cause gas — start small." },
+  { food:"Beef", emoji:"🥩", category:"protein", risk:"low", gasRisk:false, tip:"Slow-cook and blend or shred.", nutrients:["Haem iron","Zinc","Protein","B12"], vitamins:["B12","B3","B6"], desc:"One of the best sources of haem iron and B12 for brain development." },
+  { food:"Tofu", emoji:"🧊", category:"protein", risk:"low", gasRisk:false, tip:"Soft silken tofu — easy to grab.", nutrients:["Plant protein","Calcium","Iron","Isoflavones"], vitamins:["B1"], desc:"Silken tofu is naturally soft — no cooking needed. Good plant-based source of calcium and protein." },
+  { food:"Salmon", emoji:"🐟", category:"protein", risk:"medium", gasRisk:false, tip:"Rich in omega-3, flake finely.", nutrients:["Omega-3 (DHA/EPA)","Protein","Vitamin D","B12"], vitamins:["D","B12","B3"], desc:"Outstanding source of DHA omega-3 for brain and eye development." },
+  { food:"Yoghurt", emoji:"🥛", category:"dairy", risk:"medium", gasRisk:false, tip:"Full-fat plain yoghurt, no added sugar.", nutrients:["Calcium","Protein","Probiotics","B12"], vitamins:["B12","B2"], desc:"Full-fat plain yoghurt provides calcium for bone development and probiotics for gut health." },
+  { food:"Cheese", emoji:"🧀", category:"dairy", risk:"medium", gasRisk:false, tip:"Grated mild cheddar on soft food.", nutrients:["Calcium","Protein","Fat","Vitamin A"], vitamins:["A","B12","B2"], desc:"Calcium-dense and flavourful. Choose mild, full-fat varieties." },
+  { food:"Egg yolk", emoji:"🥚", category:"allergen", risk:"medium", gasRisk:false, tip:"Introduce allergen early.", nutrients:["Choline","Vitamin D","Lutein","Protein"], vitamins:["D","B12","A"], desc:"Rich in choline, critical for brain development. Early introduction is now recommended." },
+  { food:"Peanut butter", emoji:"🥜", category:"allergen", risk:"high", gasRisk:false, tip:"Dilute with water first.", nutrients:["Healthy fats","Protein","Niacin","Magnesium"], vitamins:["E","B3"], desc:"Early introduction (from ~6 months) significantly reduces peanut allergy risk." },
+  { food:"Wheat", emoji:"🌾", category:"allergen", risk:"medium", gasRisk:false, tip:"Soft bread or pasta — watch for reaction.", nutrients:["Carbohydrates","B vitamins","Iron","Fibre"], vitamins:["B1","B9"], desc:"Gluten-containing grain. Introduce gradually via soft bread or pasta." },
+  { food:"Sesame", emoji:"🫙", category:"allergen", risk:"high", gasRisk:false, tip:"Tiny amount of tahini mixed in food.", nutrients:["Calcium","Healthy fats","Protein","Iron"], vitamins:["B1","E"], desc:"One of the top 14 allergens. Introduce via a tiny amount of tahini mixed into food." },
 ];
 
 const INITIAL_LOG = [
@@ -86,9 +87,29 @@ const REACTION_OPTIONS = [
   { value:"spitup", label:"Spit-up" },
 ];
 const LLM_OPTIONS = [
-  { id:"claude", name:"Claude (Anthropic)", emoji:"🔮", hint:"console.anthropic.com → API Keys", placeholder:"sk-ant-api03-…", color:LAV },
-  { id:"openai", name:"GPT-4 (OpenAI)", emoji:"🤖", hint:"platform.openai.com → API Keys", placeholder:"sk-proj-…", color:MINT },
-  { id:"gemini", name:"Gemini (Google)", emoji:"✨", hint:"aistudio.google.com → API Keys", placeholder:"AIza…", color:AMBER },
+  { id:"claude", name:"Claude (Anthropic)", emoji:"🔮", hint:"console.anthropic.com → API Keys", placeholder:"sk-ant-api03-…", color:LAV,
+    models:[
+      { id:"claude-haiku-3-5-20241022", label:"Haiku", desc:"Fast & economical" },
+      { id:"claude-sonnet-4-20250514", label:"Sonnet", desc:"Smarter, default" },
+    ]
+  },
+  { id:"openai", name:"GPT-4 (OpenAI)", emoji:"🤖", hint:"platform.openai.com → API Keys", placeholder:"sk-proj-…", color:MINT,
+    models:[
+      { id:"gpt-4o-mini", label:"4o mini", desc:"Fast & economical" },
+      { id:"gpt-4o", label:"4o", desc:"Smarter, default" },
+    ]
+  },
+  { id:"gemini", name:"Gemini (Google)", emoji:"✨", hint:"aistudio.google.com → API Keys", placeholder:"AIza…", color:AMBER,
+    models:[
+      { id:"gemini-1.5-flash", label:"Flash", desc:"Fast & economical" },
+      { id:"gemini-1.5-pro", label:"Pro", desc:"Smarter, default" },
+    ]
+  },
+  { id:"gemma", name:"Local Gemma (Ollama)", emoji:"🦙", hint:"Ollama local server at http://localhost:11434", placeholder:"(No API key required)", color:BLUE,
+    models:[
+      { id:"gemma", label:"Gemma", desc:"Local Gemma model" }
+    ]
+  },
 ];
 const FLOW_STEPS = ["email","verify","profile","llm"];
 const SIM_CODE = "4827";
@@ -150,6 +171,19 @@ function buildRoadmap(log, profile) {
     .map((item,i)=>({ ...item, week:i<2?"This week":i<5?"Week 2":i<8?"Week 3":"Week 4", deficit:deficit[item.category] }));
 }
 
+// ─── Food log compression: turns verbose per-entry log into 2 compact lines ───
+function compressFoodLog(log) {
+  const tolerated = log.filter(e=>e.reaction==="none").map(e=>e.food);
+  const reacted   = log.filter(e=>e.reaction!=="none").map(e=>{
+    const note = e.notes ? ` (${e.notes})` : "";
+    return `${e.food} [${e.reaction}${note}]`;
+  });
+  const lines = [];
+  if (tolerated.length) lines.push("Tolerated foods: "+tolerated.join(", "));
+  if (reacted.length)   lines.push("Foods with reactions: "+reacted.join(", "));
+  return lines.length ? lines.join("\n") : "No foods logged yet.";
+}
+
 const baseInput = { width:"100%", padding:"11px 14px", borderRadius:10, border:"1px solid "+ACCENT_LIGHT, fontSize:14, background:"#fff", color:TEXT_PRIMARY, boxSizing:"border-box", marginTop:6, outline:"none" };
 
 function PrimaryBtn({children,onClick,disabled}) {
@@ -169,7 +203,7 @@ function FoodAvatar({ emoji, size=44 }) {
   );
 }
 
-function ProductSheet({ entry, onClose }) {
+function ProductSheet({ entry, onClose, onAskAI }) {
   let f = null;
   let enriched = null;
   if (typeof entry === "string") {
@@ -196,6 +230,7 @@ function ProductSheet({ entry, onClose }) {
             <div style={{ display:"flex", gap:6, marginTop:4, flexWrap:"wrap" }}>
               <Badge label={CAT_LABELS[f.category]||f.category} {...cc} />
               {rb && <Badge label={rb.label} bg={rb.bg} border={rb.border} color={rb.color} />}
+              {dbEntry?.gasRisk && <Badge label="⚠️ Gas risk" bg={AMBER.bg} border={AMBER.border} color={AMBER.text} />}
               {enriched && <Badge label="AI enriched" bg="#FFF4E8" border="#F7C29B" color="#B45A19" />}
             </div>
           </div>
@@ -224,7 +259,15 @@ function ProductSheet({ entry, onClose }) {
         ) : (
           <div style={{ fontSize:14, color:"#7A5A3A", lineHeight:1.6 }}>No details available yet for this food. Try tapping "Enrich descriptions" in the Log tab.</div>
         )}
-        <button onClick={onClose} style={{ width:"100%", marginTop:16, padding:"12px", borderRadius:24, border:"none", background:ACCENT_LIGHT, color:ACCENT, fontSize:14, fontWeight:600, cursor:"pointer" }}>Close</button>
+        <div style={{ display:"flex", gap:8, marginTop:16 }}>
+          {onAskAI && (
+            <button onClick={()=>{ onAskAI(`How do I prepare ${f.food} for my baby? Include cooking method, time, and ideal texture.`); onClose(); }}
+              style={{ flex:1, padding:"12px", borderRadius:24, border:"none", background:ACCENT, color:"#fff", fontSize:13, fontWeight:600, cursor:"pointer" }}>
+              🤖 How to prepare this?
+            </button>
+          )}
+          <button onClick={onClose} style={{ flex:1, padding:"12px", borderRadius:24, border:"none", background:ACCENT_LIGHT, color:ACCENT, fontSize:14, fontWeight:600, cursor:"pointer" }}>Close</button>
+        </div>
       </div>
     </div>
   );
@@ -457,28 +500,220 @@ function LogTab({ log, setLog, onOpenProduct }) {
   );
 }
 
-function ChatTab({ log, profile }) {
-  const [messages, setMessages] = useState([{ role:"assistant", text:"Hi! I'm your Growing Taste AI 🍑 I know your baby's profile and food history. Ask me anything about weaning!" }]);
+const SUMMARY_EVERY = 10; // summarise after every N new turns
+
+function ChatTab({ log, profile, llmConfig, onSendPreset }) {
+  const WELCOME = { role:"assistant", text:"Hi! I'm your Growing Taste AI 🍑 I know your baby's profile and food history. Ask me anything about weaning!" };
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gt_chat_messages");
+      if (saved) return JSON.parse(saved);
+    } catch (e) { console.error("Error reading chat history", e); }
+    return [WELCOME];
+  });
+  const [summary, setSummary] = useState(() => localStorage.getItem("gt_chat_summary") || "");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const endRef = useRef(null);
+
+  // Persist messages
+  useEffect(() => {
+    try { localStorage.setItem("gt_chat_messages", JSON.stringify(messages)); }
+    catch (e) { console.error("Error saving chat history", e); }
+  }, [messages]);
+
+  // Persist summary
+  useEffect(() => {
+    try { localStorage.setItem("gt_chat_summary", summary); }
+    catch (e) {}
+  }, [summary]);
+
   useEffect(()=>{ endRef.current?.scrollIntoView({behavior:"smooth"}); },[messages]);
 
+  // If parent sends a preset question (e.g. from ProductSheet), fire it
+  const presetRef = useRef(null);
+  useEffect(() => {
+    if (onSendPreset && onSendPreset !== presetRef.current) {
+      presetRef.current = onSendPreset;
+      send(onSendPreset);
+    }
+  }, [onSendPreset]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const clearChat = () => {
+    setMessages([WELCOME]);
+    setSummary("");
+    localStorage.removeItem("gt_chat_messages");
+    localStorage.removeItem("gt_chat_summary");
+  };
+
+  // ── Build system prompt ────────────────────────────────────────────────────
+  const buildSystemPrompt = (currentSummary) => {
+    const allergiesStr = profile.allergies.length ? profile.allergies.join(", ") : "none";
+    const ageMonths = getAgeMonths(profile.dob);
+    const compressedLog = compressFoodLog(log);
+    const gasRiskFoods = log
+      .filter(e => { const db = FOOD_DB.find(f=>f.food===e.food); return db?.gasRisk; })
+      .map(e=>e.food).join(", ") || "none";
+
+    return [
+      `You are the Growing Taste AI, a warm, professional, expert assistant for baby weaning.`,
+      ``,
+      `Baby Profile:`,
+      `- Name: ${profile.name}`,
+      `- Age: ${getAgeLabel(profile.dob)} (${ageMonths} months old)`,
+      `- Feeding Style: ${FEEDING_LABELS[profile.feedingStyle]}`,
+      `- Allergies: ${allergiesStr}`,
+      ``,
+      `Food Log (compressed):`,
+      compressedLog,
+      `Gas-risk foods already introduced: ${gasRiskFoods}`,
+      ``,
+      currentSummary ? `[Conversation so far]\n${currentSummary}\n[End of summary]\n` : "",
+      `CRITICAL SAFETY & ROLE BOUNDARIES (Strictly Enforced):`,
+      `1. SAFETY & WHO COMPLIANCE: Follow WHO guidelines. Never recommend solid foods before 6 months. Baby is ${ageMonths} months old.`,
+      `2. ALLERGY GUARDRAILS: Never suggest foods containing or derived from known allergies (${allergiesStr}).`,
+      `3. REACTION AWARENESS: You may recommend foods that previously caused a reaction, but MUST mention the past reaction as a clear warning/sidenote.`,
+      `4. ALLERGEN SPACING: When building introduction plans, space potential allergens at least 3 days apart from each other. When asked what to try next, suggest 2–3 foods considering what has already been introduced.`,
+      `5. COOKING & TEXTURE: When discussing food preparation, always mention: (a) recommended cooking method, (b) approximate cooking time, (c) target texture appropriate for the baby's age (${ageMonths} months).`,
+      `6. SYMPTOM REASONING: When a parent describes a physical symptom (rash, red cheeks, gas, bloating), reason through common non-allergic causes first (e.g. carotene colouration, fruit acids, high-fibre foods) before suggesting an immune/allergic reaction. Distinguish cosmetic reactions from immune reactions clearly.`,
+      `7. GAS-RISK FOODS: Broccoli, cauliflower, lentils, beans and similar foods carry a gas risk. Always advise starting with minimal portions and increasing gradually.`,
+      `8. ROLE LIMIT: You are strictly a baby weaning and infant nutrition assistant. Politely decline unrelated questions.`,
+      `9. STYLE: Be warm, empathetic, concise, under 130 words. Tailor to the baby's feeding style and age.`,
+    ].join("\n");
+  };
+
+  // ── Background summarisation (fires silently after every SUMMARY_EVERY turns) ─
+  const triggerSummarise = async (recentMessages, currentSummary) => {
+    if (!llmConfig?.apiKey && llmConfig?.provider !== "gemma") return; // skip in demo mode
+    const older = recentMessages.slice(0, -SUMMARY_EVERY);
+    if (!older.length) return;
+    const toSummarise = older.map(m=>`${m.role}: ${m.text}`).join("\n");
+    const summaryPrompt = `You are a helpful assistant. Summarise the following weaning chat conversation in 3–5 bullet points, preserving key facts, decisions, and any foods or symptoms discussed. Be concise.\n\nPrevious summary:\n${currentSummary || "(none)"}\n\nConversation:\n${toSummarise}`;
+    try {
+      let newSummary = null;
+      if (llmConfig?.provider === "gemma") {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: llmConfig?.model || "gemma",
+            messages: [
+              { role: "system", content: "You are a concise summariser." },
+              { role: "user", content: summaryPrompt }
+            ],
+            stream: false
+          })
+        });
+        const data = await res.json();
+        newSummary = data.message?.content;
+      } else {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({
+            model: "claude-haiku-3-5-20241022", // always use cheapest model for summarisation
+            max_tokens: 300,
+            system: "You are a concise summariser.",
+            messages: [{ role:"user", content: summaryPrompt }]
+          })
+        });
+        const data = await res.json();
+        newSummary = data.content?.[0]?.text;
+      }
+      if (newSummary) setSummary(newSummary);
+    } catch { /* silent fail */ }
+  };
+
+  // ── Send message ──────────────────────────────────────────────────────────
   const send = async (override) => {
     const userMsg = (override||input).trim();
     if (!userMsg||loading) return;
     setInput("");
     setMessages(m=>[...m,{role:"user",text:userMsg}]);
     setLoading(true);
-    const logSummary = log.map(e=>e.date+": "+e.food+" — reaction: "+e.reaction+(e.notes?" ("+e.notes+")":"")).join("\n");
-    const sys = "You are the Growing Taste AI, an expert assistant for baby weaning.\nBaby: "+profile.name+", age "+getAgeLabel(profile.dob)+", feeding style: "+FEEDING_LABELS[profile.feedingStyle]+", allergies: "+(profile.allergies.length?profile.allergies.join(", "):"none")+".\nFood log:\n"+logSummary+"\nBe warm, concise, under 130 words. Tailor to age and feeding style.";
+
+    const systemPromptText = buildSystemPrompt(summary);
+    // Keep only the last SUMMARY_EVERY turns for the API call (sliding window)
+    const windowMessages = messages.filter((_,i)=>i>0).slice(-SUMMARY_EVERY);
+
+    const provider = llmConfig?.provider || "claude";
+
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages",{ method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:1000, system:sys, messages:messages.filter((_,i)=>i>0).map(m=>({role:m.role,content:m.text})).concat([{role:"user",content:userMsg}]) }) });
-      const data = await res.json();
-      setMessages(m=>[...m,{role:"assistant",text:data.content?.[0]?.text||"Sorry, try again!"}]);
-    } catch { setMessages(m=>[...m,{role:"assistant",text:"Connection error."}]); }
+      let reply = "";
+      if (provider === "gemma") {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: llmConfig?.model || "gemma",
+            messages: [
+              { role: "system", content: systemPromptText },
+              ...windowMessages.map(m=>({role:m.role, content:m.text})),
+              { role: "user", content: userMsg }
+            ],
+            stream: false
+          })
+        });
+        const data = await res.json();
+        if (data.error) {
+          reply = `Ollama Error: ${data.error}`;
+        } else if (!res.ok) {
+          reply = `Ollama connection failed with status ${res.status}`;
+        } else {
+          reply = data.message?.content || "Sorry, try again! (Empty response from Ollama)";
+        }
+      } else {
+        const isClaudeProvider = provider === "claude";
+        const systemPayload = isClaudeProvider
+          ? [{ type:"text", text: systemPromptText, cache_control: { type:"ephemeral" } }]
+          : systemPromptText;
+
+        const model = llmConfig?.model || "claude-sonnet-4-20250514";
+        const apiKey = llmConfig?.apiKey || null;
+        const headers = { "Content-Type":"application/json" };
+        if (apiKey) headers["x-api-key"] = apiKey;
+        // Anthropic also requires the version header
+        if (isClaudeProvider) headers["anthropic-version"] = "2023-06-01";
+        // Enable prompt caching beta for Claude
+        if (isClaudeProvider) headers["anthropic-beta"] = "prompt-caching-2024-07-31";
+
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method:"POST",
+          headers,
+          body: JSON.stringify({
+            model,
+            max_tokens: 1000,
+            system: systemPayload,
+            messages: windowMessages
+              .map(m=>({role:m.role, content:m.text}))
+              .concat([{role:"user", content:userMsg}])
+          })
+        });
+        const data = await res.json();
+        reply = data.content?.[0]?.text || "Sorry, try again!";
+      }
+      setMessages(m => {
+        const updated = [...m, {role:"assistant", text:reply}];
+        // Trigger background summarisation if we've crossed a SUMMARY_EVERY boundary
+        const turnCount = updated.filter(x=>x.role==="user").length;
+        if (turnCount > 0 && turnCount % SUMMARY_EVERY === 0) {
+          triggerSummarise(updated, summary);
+        }
+        return updated;
+      });
+    } catch {
+      setMessages(m=>[...m,{role:"assistant",text:"Connection error."}]);
+    }
     setLoading(false);
   };
+
+  const CHIPS = [
+    "What should we try next?",
+    "How to cook this safely?",
+    "Why the red cheeks?",
+    "Could this cause gas?",
+    "Plan this week's menu",
+  ];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", height:"100%" }}>
@@ -495,10 +730,13 @@ function ChatTab({ log, profile }) {
         {loading && <div style={{ display:"flex", justifyContent:"flex-start", marginBottom:8 }}><div style={{ padding:"10px 14px", borderRadius:"16px 16px 16px 4px", background:"#fff", fontSize:13, color:TEXT_SEC, boxShadow:`-3px -3px 8px ${SHADOW_LIGHT}, 3px 3px 8px ${SHADOW_DARK}` }}>Thinking…</div></div>}
         <div ref={endRef} />
       </div>
-      <div style={{ display:"flex", gap:6, marginBottom:8, flexWrap:"wrap" }}>
-        {['Why the rash?','What to cook today?','Is egg safe?'].map(q=>(
-          <button key={q} onClick={()=>send(q)} style={{ ...neu(20,4), fontSize:11, padding:"6px 12px", border:"none", color:TEXT_SEC, cursor:"pointer" }}>{q}</button>
-        ))}
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8, width:"100%" }}>
+        <div style={{ display:"flex", gap:6, flexWrap:"wrap", flex:1 }}>
+          {CHIPS.map(q=>(
+            <button key={q} onClick={()=>send(q)} style={{ ...neu(20,4), fontSize:10, padding:"5px 10px", border:"none", color:TEXT_SEC, cursor:"pointer" }}>{q}</button>
+          ))}
+        </div>
+        <button onClick={clearChat} style={{ background:"none", border:"none", color:TEXT_SEC, fontSize:11, cursor:"pointer", padding:"6px 12px", flexShrink:0 }}>Clear</button>
       </div>
       <div style={{ ...neuInset(24), padding:"4px 6px 4px 16px", display:"flex", alignItems:"center", gap:10 }}>
         <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()}
@@ -579,11 +817,17 @@ function ProfileTab({ profile, setProfile }) {
 
 const NAV = [["📍","Roadmap"],["📓","Log"],["🤖","AI Chat"],["👶","Profile"]];
 
-function MainApp({ initProfile, onSignOut }) {
+function MainApp({ initProfile, llmConfig, onSignOut }) {
   const [tab, setTab]         = useState(0);
   const [log, setLog]         = useState(INITIAL_LOG);
   const [profile, setProfile] = useState(initProfile);
   const [productSheet, setProductSheet] = useState(null);
+  const [chatPreset, setChatPreset] = useState(null);
+
+  const handleAskAI = (question) => {
+    setChatPreset(question + "__" + Date.now()); // unique key forces re-fire
+    setTab(2);
+  };
 
   return (
     <div style={{ fontFamily:"system-ui,sans-serif", maxWidth:380, margin:"0 auto", display:"flex", flexDirection:"column", height:640, position:"relative", background:BG }}>
@@ -603,7 +847,7 @@ function MainApp({ initProfile, onSignOut }) {
       <div style={{ flex:1, overflowY:"auto", padding:"6px 18px 0" }}>
         {tab===0 && <RoadmapTab log={log} profile={profile} onOpenProduct={setProductSheet} />}
         {tab===1 && <LogTab log={log} setLog={setLog} onOpenProduct={setProductSheet} />}
-        {tab===2 && <ChatTab log={log} profile={profile} />}
+        {tab===2 && <ChatTab log={log} profile={profile} llmConfig={llmConfig} onSendPreset={chatPreset} />}
         {tab===3 && <ProfileTab profile={profile} setProfile={p=>setProfile(p)} />}
       </div>
 
@@ -616,7 +860,7 @@ function MainApp({ initProfile, onSignOut }) {
         ))}
       </div>
 
-      {productSheet && <ProductSheet entry={productSheet} onClose={()=>setProductSheet(null)} />}
+      {productSheet && <ProductSheet entry={productSheet} onClose={()=>setProductSheet(null)} onAskAI={handleAskAI} />}
     </div>
   );
 }
@@ -658,6 +902,7 @@ export default function App() {
   const [dob, setDob]           = useState("");
   const [feedingStyle, setFS]   = useState("mixed");
   const [selectedLLM, setSLLM]  = useState(null);
+  const [selectedModel, setSModel] = useState(null);
   const [apiKey, setApiKey]     = useState("");
   const [showKey, setShowKey]   = useState(false);
   const [keyError, setKE]       = useState("");
@@ -675,16 +920,21 @@ export default function App() {
   }
   function validateKey(){
     setKE("");
-    if(!apiKey.trim()){setKE("Please enter your API key.");return;}
-    if(selectedLLM==="claude"&&!apiKey.startsWith("sk-ant")){setKE("Claude keys start with sk-ant-api03-");return;}
-    if(selectedLLM==="openai"&&!apiKey.startsWith("sk-")){setKE("OpenAI keys start with sk-");return;}
-    if(selectedLLM==="gemini"&&!apiKey.startsWith("AIza")){setKE("Gemini keys start with AIza");return;}
+    if (selectedLLM !== "gemma") {
+      if(!apiKey.trim()){setKE("Please enter your API key.");return;}
+      if(selectedLLM==="claude"&&!apiKey.startsWith("sk-ant")){setKE("Claude keys start with sk-ant-api03-");return;}
+      if(selectedLLM==="openai"&&!apiKey.startsWith("sk-")){setKE("OpenAI keys start with sk-");return;}
+      if(selectedLLM==="gemini"&&!apiKey.startsWith("AIza")){setKE("Gemini keys start with AIza");return;}
+    }
     setScreen("app");
   }
 
   const initProfile = { name:babyName||"Baby", dob:dob||"15/10/2025", feedingStyle:feedingStyle, allergies:[], familyAllergy:false };
+  const llmConfig = selectedLLM
+    ? { provider: selectedLLM, model: selectedModel || LLM_OPTIONS.find(l=>l.id===selectedLLM)?.models[0]?.id, apiKey }
+    : null;
 
-  if(screen==="app") return <MainApp initProfile={initProfile} onSignOut={()=>setScreen("welcome")} />;
+  if(screen==="app") return <MainApp initProfile={initProfile} llmConfig={llmConfig} onSignOut={()=>setScreen("welcome")} />;
 
   if(screen==="welcome") return (
     <OnboardingShell step="welcome">
@@ -756,9 +1006,9 @@ export default function App() {
   );
 
   if(screen==="llm") return (
-    <OnboardingShell step="llm" title="Connect your AI" subtitle="Choose your AI provider. Your key is stored securely on-device.">
+    <OnboardingShell step="llm" title="Connect your AI" subtitle="Choose your AI provider and model tier. Your key is stored securely on-device.">
       {LLM_OPTIONS.map(llm=>(
-        <div key={llm.id} onClick={()=>{setSLLM(llm.id);setApiKey("");setKE("");}}
+        <div key={llm.id} onClick={()=>{setSLLM(llm.id);setSModel(llm.models[1]?.id || llm.models[0]?.id);setApiKey("");setKE("");}}
           style={{ padding:"14px 16px", borderRadius:16, cursor:"pointer", marginBottom:10, border:selectedLLM===llm.id?"2px solid "+ACCENT:"1px solid #f0e0d0", background:selectedLLM===llm.id?ACCENT_LIGHT:"#fff" }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <div style={{ fontSize:24 }}>{llm.emoji}</div>
@@ -769,20 +1019,45 @@ export default function App() {
           </div>
           {selectedLLM===llm.id && (
             <div style={{ marginTop:12 }} onClick={e=>e.stopPropagation()}>
-              <div style={{ fontSize:12, color:ACCENT, marginBottom:6 }}>Paste your API key below</div>
-              <div style={{ position:"relative" }}>
-                <input type={showKey?"text":"password"} placeholder={llm.placeholder} value={apiKey}
-                  onChange={e=>{setApiKey(e.target.value);setKE("");}}
-                  style={{ ...baseInput, marginTop:0, paddingRight:44, fontFamily:"monospace", fontSize:12 }} />
-                <button onClick={()=>setShowKey(s=>!s)} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", cursor:"pointer", fontSize:16 }}>{showKey?"🙈":"👁️"}</button>
-              </div>
+              {/* Model tier selector */}
+              {llm.models && llm.models.length > 1 && (
+                <div style={{ display:"flex", gap:6, marginBottom:12 }}>
+                  {llm.models.map(m=>(
+                    <button key={m.id} onClick={()=>setSModel(m.id)}
+                      style={{ flex:1, padding:"8px 6px", borderRadius:10, border:selectedModel===m.id?"2px solid "+ACCENT:"1px solid #f0e0d0",
+                        background:selectedModel===m.id?ACCENT_LIGHT:"#fff", cursor:"pointer" }}>
+                      <div style={{ fontSize:12, fontWeight:700, color:selectedModel===m.id?ACCENT:TEXT_PRIMARY }}>{m.label}</div>
+                      <div style={{ fontSize:10, color:TEXT_SEC }}>{m.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {selectedLLM === "gemma" && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontSize:12, color:ACCENT, marginBottom:6 }}>Model name in Ollama (default: gemma)</div>
+                  <input type="text" placeholder="e.g. gemma, gemma:2b, llama3" value={selectedModel || ""}
+                    onChange={e=>setSModel(e.target.value)}
+                    style={{ ...baseInput, marginTop:0, fontFamily:"monospace", fontSize:12 }} />
+                </div>
+              )}
+              {selectedLLM !== "gemma" && (
+                <>
+                  <div style={{ fontSize:12, color:ACCENT, marginBottom:6 }}>Paste your API key below</div>
+                  <div style={{ position:"relative" }}>
+                    <input type={showKey?"text":"password"} placeholder={llm.placeholder} value={apiKey}
+                      onChange={e=>{setApiKey(e.target.value);setKE("");}}
+                      style={{ ...baseInput, marginTop:0, paddingRight:44, fontFamily:"monospace", fontSize:12 }} />
+                    <button onClick={()=>setShowKey(s=>!s)} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", cursor:"pointer", fontSize:16 }}>{showKey?"🙈":"👁️"}</button>
+                  </div>
+                </>
+              )}
               {keyError && <div style={{ fontSize:12, color:RED.text, marginTop:6 }}>{keyError}</div>}
             </div>
           )}
         </div>
       ))}
       <div style={{ flex:1 }} />
-      <PrimaryBtn onClick={validateKey} disabled={!selectedLLM||!apiKey}>Connect & finish →</PrimaryBtn>
+      <PrimaryBtn onClick={validateKey} disabled={!selectedLLM || (selectedLLM !== "gemma" && !apiKey)}>Connect & finish →</PrimaryBtn>
       <GhostBtn onClick={()=>setScreen("app")}>Skip for now (use demo mode)</GhostBtn>
     </OnboardingShell>
   );
